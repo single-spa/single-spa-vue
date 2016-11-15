@@ -1,6 +1,6 @@
 {
   "name": "single-spa-vue",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "a single-spa plugin for vue.js applications",
   "main": "lib/single-spa-vue.js",
   "scripts": {
@@ -10,7 +10,10 @@
     "type": "git",
     "url": "git+https://github.com/blittle/single-spa-vuejs.git"
   },
-	"files": ["lib", "src"],
+  "files": [
+    "lib",
+    "src"
+  ],
   "keywords": [
     "single-spa",
     "vuejs",
