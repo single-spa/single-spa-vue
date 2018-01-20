@@ -40,7 +40,9 @@ function bootstrap(opts) {
 function mount(opts, mountedInstances) {
 	return new Promise((resolve, reject) => {
 		mountedInstances.instance = new opts.Vue(opts.appOptions);
-		mountedInstances.instance = mountedInstances.instance.bind(mountedInstances.instance)
+    if (mountedInstances.instance.bind) {
+      mountedInstances.instance = mountedInstances.instance.bind(mountedInstances.instance);
+    }
 		resolve();
 	});
 }
