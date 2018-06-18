@@ -5,7 +5,7 @@ const defaultOpts = {
   template: null,
 }
 
-export default function singleSpaReact(userOpts) {
+export default function singleSpaVue(userOpts) {
   if (typeof userOpts !== 'object') {
     throw new Error(`single-spa-vue requires a configuration object`);
   }
