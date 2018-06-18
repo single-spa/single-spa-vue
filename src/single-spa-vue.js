@@ -37,21 +37,37 @@ function bootstrap(opts) {
   return Promise.resolve();
 }
 
-function mount(opts, mountedInstances) {
-  return new Promise((resolve, reject) => {
-    mountedInstances.instance = new opts.Vue(opts.appOptions);
-    if (mountedInstances.instance.bind) {
-      mountedInstances.instance = mountedInstances.instance.bind(mountedInstances.instance);
-    }
-    resolve();
-  });
+function mount(opts, mountedInstances, props) {
+  return Promise
+    .resolve()
+    .then(() => {
+      const otherOptions = {}
+      if (props.domElement && !opts.appOptions.el) {
+        otherOptions.el = props.domElement;
+      }
+
+      const options = {
+        ...opts.appOptions,
+        ...otherOptions,
+        data: {
+          ...(opts.appOptions.data || {}),
+          ...props,
+        },
+      }
+
+      mountedInstances.instance = new opts.Vue(options);
+      if (mountedInstances.instance.bind) {
+        mountedInstances.instance = mountedInstances.instance.bind(mountedInstances.instance);
+      }
+    })
 }
 
 function unmount(opts, mountedInstances) {
-  return new Promise((resolve, reject) => {
-    mountedInstances.instance.$destroy();
-    mountedInstances.instance.$el.innerHTML = '';
-    delete mountedInstances.instance;
-    resolve();
-  });
+  return Promise
+    .resolve()
+    .then(() => {
+      mountedInstances.instance.$destroy();
+      mountedInstances.instance.$el.innerHTML = '';
+      delete mountedInstances.instance;
+    })
 }
