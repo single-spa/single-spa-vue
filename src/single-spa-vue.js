@@ -30,6 +30,7 @@ export default function singleSpaVue(userOpts) {
     bootstrap: bootstrap.bind(null, opts, mountedInstances),
     mount: mount.bind(null, opts, mountedInstances),
     unmount: unmount.bind(null, opts, mountedInstances),
+    update: update.bind(null, opts, mountedInstances),
   };
 }
 
@@ -60,6 +61,19 @@ function mount(opts, mountedInstances, props) {
         mountedInstances.instance = mountedInstances.instance.bind(mountedInstances.instance);
       }
     })
+}
+
+function update(opts, mountedInstances, props) {
+  return new Promise(resolve => {
+    const data = {
+      ...(opts.appOptions.data || {}),
+      ...props,
+    };
+    for (let prop in data) {
+      mountedInstances.instance[prop] = data[prop];
+    }
+    resolve();
+  })
 }
 
 function unmount(opts, mountedInstances) {
