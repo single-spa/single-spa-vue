@@ -15,13 +15,14 @@ Then, add the following to your application's entry file
 ```js
 import Vue from 'vue';
 import singleSpaVue from 'single-spa-vue';
+import App from ./App.vue
 
 const vueLifecycles = singleSpaVue({
   Vue,
   appOptions: {
     el: '#mount-location',
-    template: '<div>some template</div>'
-  }  
+    render: h => h(App),
+  }
 });
 
 export const bootstrap = [
@@ -43,6 +44,7 @@ All options are passed to single-spa-vue via the `opts` parameter when calling `
 
 - `Vue`: (required) The main Vue object, which is generally either exposed onto the window or is available via `require('vue')` `import Vue from 'vue'`.
 - `appOptions`: (required) An object which will be used to instantiate your Vue.js application. `appOptions` will pass directly through to `new Vue(appOptions)`
+- `loadRootComponent`: (optional and replaces `appOptions.render`) A promise that resolves with your root component. This is useful for lazy loading.
 
 ## As a single-spa parcel
 To create a single-spa parcel, simply omit the `el` option from your appOptions, since the dom element will be specified by the user of the Parcel. Everything other
