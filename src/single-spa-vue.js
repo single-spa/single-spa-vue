@@ -35,7 +35,11 @@ export default function singleSpaVue(userOpts) {
 }
 
 function bootstrap(opts) {
-  return Promise.resolve();
+  if (opts.loadRootComponent) {
+    return opts.loadRootComponent().then(root => opts.rootComponent = root)
+  } else {
+    return Promise.resolve();
+  }
 }
 
 function mount(opts, mountedInstances, props) {
@@ -45,6 +49,10 @@ function mount(opts, mountedInstances, props) {
       const otherOptions = {}
       if (props.domElement && !opts.appOptions.el) {
         otherOptions.el = props.domElement;
+      }
+
+      if (!opts.appOptions.render && !opts.appOptions.template && opts.rootComponent) {
+        otherOptions.render = (h) => h(opts.rootComponent)
       }
 
       const options = {
