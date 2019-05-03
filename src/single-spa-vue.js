@@ -51,6 +51,17 @@ function mount(opts, mountedInstances, props) {
         otherOptions.el = props.domElement;
       }
 
+      if (!otherOptions.el) {
+        const htmlId = `single-spa-application:${props.name}`
+        otherOptions.el = `#${htmlId}`
+        let domEl = document.getElementById(htmlId)
+        if (!domEl) {
+          domEl = document.createElement('div')
+          domEl.id = htmlId
+          document.body.appendChild(domEl)
+        }
+      }
+
       if (!opts.appOptions.render && !opts.appOptions.template && opts.rootComponent) {
         otherOptions.render = (h) => h(opts.rootComponent)
       }
