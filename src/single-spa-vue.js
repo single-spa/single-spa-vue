@@ -53,7 +53,7 @@ function mount(opts, mountedInstances, props) {
 
       if (!otherOptions.el) {
         const htmlId = `single-spa-application:${props.name}`
-        otherOptions.el = `#${htmlId}`
+        otherOptions.el = `#${htmlId.replace(':', '\\:')}`
         let domEl = document.getElementById(htmlId)
         if (!domEl) {
           domEl = document.createElement('div')
