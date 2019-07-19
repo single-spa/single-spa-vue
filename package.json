@@ -4,7 +4,7 @@
   "description": "a single-spa plugin for vue.js applications",
   "main": "lib/single-spa-vue.js",
   "scripts": {
-    "prepublish": "yarn build",
+    "prepublishOnly": "yarn build",
     "build": "rimraf lib && babel src --out-dir lib --source-maps"
   },
   "repository": {
