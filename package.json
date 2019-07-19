@@ -13,8 +13,10 @@
   },
   "files": [
     "lib",
-    "src"
+    "src",
+    "types"
   ],
+  "types": "types/single-spa-vue.d.ts",
   "keywords": [
     "single-spa",
     "vuejs",
