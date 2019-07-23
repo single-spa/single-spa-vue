@@ -3,15 +3,16 @@ declare module "single-spa-vue" {
 
   type SingleSpaVueOpts = {
     Vue: any;
-    appOptions: object;
-    template: string;
+    appOptions?: any;
+    template?: string;
+    loadRootComponent?(): Promise<any>;
   }
 
   type SingleSpaVueLifecycles = {
-    bootstrap(singleSpaProps: SingleSpaProps): Promise;
-    mount(singleSpaProps: SingleSpaProps): Promise;
-    unmount(singleSpaProps: SingleSpaProps): Promise;
-    update(singleSpaProps: SingleSpaProps): Promise;
+    bootstrap(singleSpaProps: SingleSpaProps): Promise<any>;
+    mount(singleSpaProps: SingleSpaProps): Promise<any>;
+    unmount(singleSpaProps: SingleSpaProps): Promise<any>;
+    update(singleSpaProps: SingleSpaProps): Promise<any>;
   }
 
   type SingleSpaProps = object;
