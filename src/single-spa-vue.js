@@ -46,13 +46,14 @@ function mount(opts, mountedInstances, props) {
   return Promise
     .resolve()
     .then(() => {
-      if (props.domElement && !opts.appOptions.el) {
-        opts.appOptions.el = props.domElement;
+      const appOptions = {...opts.appOptions}
+      if (props.domElement && !appOptions.el) {
+        appOptions.el = props.domElement;
       }
 
-      if (!opts.appOptions.el) {
+      if (!appOptions.el) {
         const htmlId = `single-spa-application:${props.name}`
-        opts.appOptions.el = `#${htmlId.replace(':', '\\:')}`
+        appOptions.el = `#${htmlId.replace(':', '\\:')}`
         let domEl = document.getElementById(htmlId)
         if (!domEl) {
           domEl = document.createElement('div')
@@ -61,17 +62,17 @@ function mount(opts, mountedInstances, props) {
         }
       }
 
-      if (!opts.appOptions.render && !opts.appOptions.template && opts.rootComponent) {
-        opts.appOptions.render = (h) => h(opts.rootComponent)
+      if (!appOptions.render && !appOptions.template && opts.rootComponent) {
+        appOptions.render = (h) => h(opts.rootComponent)
       }
 
-      if (!opts.appOptions.data) {
-        opts.appOptions.data = {}
+      if (!appOptions.data) {
+        appOptions.data = {}
       }
 
-      opts.appOptions.data = {...opts.appOptions.data, ...props}
+      appOptions.data = {...appOptions.data, ...props}
 
-      mountedInstances.instance = new opts.Vue(opts.appOptions);
+      mountedInstances.instance = new opts.Vue(appOptions);
       if (mountedInstances.instance.bind) {
         mountedInstances.instance = mountedInstances.instance.bind(mountedInstances.instance);
       }

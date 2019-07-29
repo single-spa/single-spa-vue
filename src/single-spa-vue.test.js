@@ -96,7 +96,9 @@ describe('single-spa-vue', () => {
     })
 
     return lifecycles.bootstrap(props).then(() => lifecycles.mount(props)).then(() => {
-      expect(Vue).toHaveBeenCalledWith(appOptions)
+      expect(Vue).toHaveBeenCalled()
+      expect(Vue.mock.calls[0][0].el).toBeTruthy()
+      expect(Vue.mock.calls[0][0].something).toBeTruthy()
       return lifecycles.unmount(props)
     })
   })
@@ -117,6 +119,23 @@ describe('single-spa-vue', () => {
       return lifecycles.mount(props)
     }).then(() => {
       expect(Vue.mock.calls[0][0].render).toBeDefined()
+      return lifecycles.unmount(props)
+    })
+  })
+
+  it(`adds the single-spa props as data to the root component`, () => {
+    props.someCustomThing = 'hi'
+
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {},
+    })
+
+    return lifecycles.bootstrap(props).then(() => lifecycles.mount(props)).then(() => {
+      expect(Vue).toHaveBeenCalled()
+      expect(Vue.mock.calls[0][0].data).toBeTruthy()
+      expect(Vue.mock.calls[0][0].data.name).toBe('test-app')
+      expect(Vue.mock.calls[0][0].data.someCustomThing).toBe('hi')
       return lifecycles.unmount(props)
     })
   })
