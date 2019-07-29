@@ -61,7 +61,6 @@ function mount(opts, mountedInstances, props) {
         }
       }
 
-      console.log(opts.appOptions.render, opts.appOptions.template, opts.rootComponent)
       if (!opts.appOptions.render && !opts.appOptions.template && opts.rootComponent) {
         opts.appOptions.render = (h) => h(opts.rootComponent)
       }
