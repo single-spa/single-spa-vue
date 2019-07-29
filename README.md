@@ -1,4 +1,5 @@
 # single-spa-vuejs
+[![Build Status](https://travis-ci.org/CanopyTax/single-spa-vue.svg?branch=master)](https://travis-ci.org/CanopyTax/single-spa-vue)
 
 Generic lifecycle hooks for Vue.js applications that are registered as [applications](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#registered-applications) of [single-spa](https://github.com/CanopyTax/single-spa).
 
