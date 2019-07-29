@@ -46,14 +46,14 @@ function mount(opts, mountedInstances, props) {
   return Promise
     .resolve()
     .then(() => {
-      const otherOptions = {}
-      if (props.domElement && !opts.appOptions.el) {
-        otherOptions.el = props.domElement;
+      const appOptions = {...opts.appOptions}
+      if (props.domElement && !appOptions.el) {
+        appOptions.el = props.domElement;
       }
 
-      if (!otherOptions.el) {
+      if (!appOptions.el) {
         const htmlId = `single-spa-application:${props.name}`
-        otherOptions.el = `#${htmlId.replace(':', '\\:')}`
+        appOptions.el = `#${htmlId.replace(':', '\\:')}`
         let domEl = document.getElementById(htmlId)
         if (!domEl) {
           domEl = document.createElement('div')
@@ -62,20 +62,17 @@ function mount(opts, mountedInstances, props) {
         }
       }
 
-      if (!opts.appOptions.render && !opts.appOptions.template && opts.rootComponent) {
-        otherOptions.render = (h) => h(opts.rootComponent)
+      if (!appOptions.render && !appOptions.template && opts.rootComponent) {
+        appOptions.render = (h) => h(opts.rootComponent)
       }
 
-      const options = {
-        ...opts.appOptions,
-        ...otherOptions,
-        data: {
-          ...(opts.appOptions.data || {}),
-          ...props,
-        },
+      if (!appOptions.data) {
+        appOptions.data = {}
       }
 
-      mountedInstances.instance = new opts.Vue(options);
+      appOptions.data = {...appOptions.data, ...props}
+
+      mountedInstances.instance = new opts.Vue(appOptions);
       if (mountedInstances.instance.bind) {
         mountedInstances.instance = mountedInstances.instance.bind(mountedInstances.instance);
       }
@@ -83,7 +80,7 @@ function mount(opts, mountedInstances, props) {
 }
 
 function update(opts, mountedInstances, props) {
-  return new Promise(resolve => {
+  return Promise.resolve().then(() => {
     const data = {
       ...(opts.appOptions.data || {}),
       ...props,
@@ -91,7 +88,6 @@ function update(opts, mountedInstances, props) {
     for (let prop in data) {
       mountedInstances.instance[prop] = data[prop];
     }
-    resolve();
   })
 }
 
