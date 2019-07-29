@@ -139,4 +139,17 @@ describe('single-spa-vue', () => {
       return lifecycles.unmount(props)
     })
   })
+
+  it(`mounts into the single-spa-container div if you don't provide an 'el' in appOptions`, () => {
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {},
+    })
+
+    return lifecycles.bootstrap(props).then(() => lifecycles.mount(props)).then(() => {
+      expect(Vue).toHaveBeenCalled()
+      expect(Vue.mock.calls[0][0].el).toBe(cssSelector + " .single-spa-container")
+      return lifecycles.unmount(props)
+    })
+  })
 })

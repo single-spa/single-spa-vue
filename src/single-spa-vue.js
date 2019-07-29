@@ -53,13 +53,24 @@ function mount(opts, mountedInstances, props) {
 
       if (!appOptions.el) {
         const htmlId = `single-spa-application:${props.name}`
-        appOptions.el = `#${htmlId.replace(':', '\\:')}`
+        appOptions.el = `#${htmlId.replace(':', '\\:')} .single-spa-container`
         let domEl = document.getElementById(htmlId)
         if (!domEl) {
           domEl = document.createElement('div')
           domEl.id = htmlId
           document.body.appendChild(domEl)
         }
+
+        // single-spa-vue@>=2 always REPLACES the `el` instead of appending to it.
+        // We want domEl to stick around and not be replaced. So we tell Vue to mount
+        // into a container div inside of the main domEl
+        if (!domEl.querySelector('.single-spa-container')) {
+          const singleSpaContainer = document.createElement('div')
+          singleSpaContainer.className = 'single-spa-container'
+          domEl.appendChild(singleSpaContainer)
+        }
+
+        mountedInstances.domEl = domEl
       }
 
       if (!appOptions.render && !appOptions.template && opts.rootComponent) {
@@ -98,5 +109,10 @@ function unmount(opts, mountedInstances) {
       mountedInstances.instance.$destroy();
       mountedInstances.instance.$el.innerHTML = '';
       delete mountedInstances.instance;
+
+      if (mountedInstances.domEl) {
+        mountedInstances.domEl.innerHTML = ''
+        delete mountedInstances.domEl
+      }
     })
 }
