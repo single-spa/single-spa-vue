@@ -6,7 +6,7 @@ const defaultOpts = {
 }
 
 export default function singleSpaVue(userOpts) {
-  if (typeof userOpts !== 'object') {
+  if (Object.prototype.toString.call(userOpts) !== '[object Object]') {
     throw new Error(`single-spa-vue requires a configuration object`);
   }
 
