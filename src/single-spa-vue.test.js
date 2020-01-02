@@ -152,4 +152,17 @@ describe('single-spa-vue', () => {
       return lifecycles.unmount(props)
     })
   })
+
+  it(`mounts will return promise with vue instance`, () => {
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {},
+    })
+    return lifecycles.bootstrap(props).then(() => lifecycles.mount(props).then((instance) => {
+      expect(Vue).toHaveBeenCalled()
+      expect(instance instanceof Vue).toBeTruthy()
+    })).then(() => {
+      return lifecycles.unmount(props)
+    })
+  }) 
 })
