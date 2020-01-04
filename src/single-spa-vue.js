@@ -87,6 +87,7 @@ function mount(opts, mountedInstances, props) {
       if (mountedInstances.instance.bind) {
         mountedInstances.instance = mountedInstances.instance.bind(mountedInstances.instance);
       }
+      return mountedInstances.instance;
     })
 }
 
