@@ -6,7 +6,14 @@
   "scripts": {
     "prepublishOnly": "yarn build",
     "build": "rimraf lib && rollup -c",
-    "test": "jest"
+    "test": "jest",
+    "prettier": "prettier --write './**'",
+    "lint": "eslint src"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged && concurrently -n yarn:test yarn:lint"
+    }
   },
   "repository": {
     "type": "git",
@@ -33,16 +40,26 @@
   },
   "homepage": "https://github.com/blittle/single-spa-vuejs#readme",
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
     "@rollup/plugin-commonjs": "^11.0.1",
     "@rollup/plugin-node-resolve": "^7.0.0",
-    "@types/jest": "^24.0.15",
-    "babel-jest": "^24.8.0",
+    "@types/jest": "^24.0.25",
+    "concurrently": "^5.0.2",
     "css.escape": "^1.5.1",
-    "jest": "^24.8.0",
-    "rimraf": "^2.6.3",
+    "eslint": "^6.8.0",
+    "eslint-config-important-stuff": "^1.1.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.0.6",
+    "jest": "^24.9.0",
+    "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1",
+    "rimraf": "^3.0.0",
     "rollup": "^1.29.0",
     "rollup-plugin-babel": "^4.3.3"
+  },
+  "dependencies": {
+    "babel-eslint": "^10.0.3"
   }
 }
