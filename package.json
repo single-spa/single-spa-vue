@@ -5,7 +5,7 @@
   "main": "lib/single-spa-vue.js",
   "scripts": {
     "prepublishOnly": "yarn build",
-    "build": "rimraf lib && babel src --out-dir lib --source-maps --ignore '**/*.test.js'",
+    "build": "rimraf lib && rollup -c",
     "test": "jest"
   },
   "repository": {
@@ -33,13 +33,16 @@
   },
   "homepage": "https://github.com/blittle/single-spa-vuejs#readme",
   "devDependencies": {
-    "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
-    "@babel/plugin-transform-modules-umd": "^7.2.0",
     "@babel/preset-env": "^7.5.5",
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
     "@types/jest": "^24.0.15",
     "babel-jest": "^24.8.0",
+    "css.escape": "^1.5.1",
     "jest": "^24.8.0",
-    "rimraf": "^2.6.3"
+    "rimraf": "^2.6.3",
+    "rollup": "^1.29.0",
+    "rollup-plugin-babel": "^4.3.3"
   }
 }

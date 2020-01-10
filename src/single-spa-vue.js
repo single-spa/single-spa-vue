@@ -1,3 +1,5 @@
+import 'css.escape'
+
 const defaultOpts = {
   // required opts
   Vue: null,
@@ -53,7 +55,7 @@ function mount(opts, mountedInstances, props) {
 
       if (!appOptions.el) {
         const htmlId = `single-spa-application:${props.name}`
-        appOptions.el = `#${htmlId.replace(':', '\\:')} .single-spa-container`
+        appOptions.el = `#${CSS.escape(htmlId)} .single-spa-container`
         let domEl = document.getElementById(htmlId)
         if (!domEl) {
           domEl = document.createElement('div')
