@@ -1,6 +1,7 @@
 import babel from "rollup-plugin-babel";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
+import { terser } from "rollup-plugin-terser";
 
 export default {
   input: "./src/single-spa-vue.js",
@@ -15,6 +16,7 @@ export default {
       exclude: "node_modules/**"
     }),
     resolve(),
-    commonjs()
+    commonjs(),
+    terser()
   ]
 };
