@@ -51,27 +51,37 @@ function mount(opts, mountedInstances, props) {
       appOptions.el = props.domElement;
     }
 
-    if (!appOptions.el) {
+    let domEl;
+    if (appOptions.el) {
+      domEl = document.querySelector(appOptions.el);
+      if (!domEl) {
+        throw Error(
+          `If appOptions.el is provided to single-spa-vue, the dom element must exist in the dom. Was provided as ${appOptions.el}`
+        );
+      }
+    } else {
       const htmlId = `single-spa-application:${props.name}`;
-      appOptions.el = `#${CSS.escape(htmlId)} .single-spa-container`;
-      let domEl = document.getElementById(htmlId);
+      appOptions.el = `#${CSS.escape(htmlId)}`;
+      domEl = document.getElementById(htmlId);
       if (!domEl) {
         domEl = document.createElement("div");
         domEl.id = htmlId;
         document.body.appendChild(domEl);
       }
-
-      // single-spa-vue@>=2 always REPLACES the `el` instead of appending to it.
-      // We want domEl to stick around and not be replaced. So we tell Vue to mount
-      // into a container div inside of the main domEl
-      if (!domEl.querySelector(".single-spa-container")) {
-        const singleSpaContainer = document.createElement("div");
-        singleSpaContainer.className = "single-spa-container";
-        domEl.appendChild(singleSpaContainer);
-      }
-
-      mountedInstances.domEl = domEl;
     }
+
+    appOptions.el = appOptions.el + " .single-spa-container";
+
+    // single-spa-vue@>=2 always REPLACES the `el` instead of appending to it.
+    // We want domEl to stick around and not be replaced. So we tell Vue to mount
+    // into a container div inside of the main domEl
+    if (!domEl.querySelector(".single-spa-container")) {
+      const singleSpaContainer = document.createElement("div");
+      singleSpaContainer.className = "single-spa-container";
+      domEl.appendChild(singleSpaContainer);
+    }
+
+    mountedInstances.domEl = domEl;
 
     if (!appOptions.render && !appOptions.template && opts.rootComponent) {
       appOptions.render = h => h(opts.rootComponent);

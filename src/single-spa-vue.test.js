@@ -64,6 +64,34 @@ describe("single-spa-vue", () => {
       });
   });
 
+  it(`uses the appOptions.el selector if provided, and wraps the single-spa application in a container div`, () => {
+    document.body.appendChild(
+      Object.assign(document.createElement("div"), {
+        id: "my-custom-el"
+      })
+    );
+
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {
+        el: "#my-custom-el"
+      }
+    });
+
+    expect(document.querySelector(`#my-custom-el .single-spa-container`)).toBe(
+      null
+    );
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        expect(
+          document.querySelector(`#my-custom-el .single-spa-container`)
+        ).toBeTruthy();
+      });
+  });
+
   it(`reuses the default dom element container on the second mount`, () => {
     const lifecycles = new singleSpaVue({
       Vue,
@@ -96,7 +124,6 @@ describe("single-spa-vue", () => {
 
   it(`passes appOptions straight through to Vue`, () => {
     const appOptions = {
-      el: document.createElement("div"),
       something: "random"
     };
     const lifecycles = new singleSpaVue({
@@ -109,7 +136,6 @@ describe("single-spa-vue", () => {
       .then(() => lifecycles.mount(props))
       .then(() => {
         expect(Vue).toHaveBeenCalled();
-        expect(Vue.mock.calls[0][0].el).toBeTruthy();
         expect(Vue.mock.calls[0][0].something).toBeTruthy();
         return lifecycles.unmount(props);
       });
