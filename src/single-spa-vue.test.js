@@ -89,6 +89,39 @@ describe("single-spa-vue", () => {
         expect(
           document.querySelector(`#my-custom-el .single-spa-container`)
         ).toBeTruthy();
+
+        document.querySelector("#my-custom-el").remove();
+      });
+  });
+
+  it(`throws an error if appOptions.el is not passed in as a string`, () => {
+    expect(() => {
+      new singleSpaVue({
+        Vue,
+        appOptions: {
+          // `el` should be a string
+          el: document.createElement("div")
+        }
+      });
+    }).toThrow(/must be a string CSS selector/);
+  });
+
+  it(`throws an error if appOptions.el doesn't exist in the dom`, () => {
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {
+        el: "#doesnt-exist-in-dom"
+      }
+    });
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        fail("should throw validation error");
+      })
+      .catch(err => {
+        expect(err.message).toMatch("the dom element must exist in the dom");
       });
   });
 

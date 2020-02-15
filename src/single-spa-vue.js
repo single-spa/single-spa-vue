@@ -18,11 +18,18 @@ export default function singleSpaVue(userOpts) {
   };
 
   if (!opts.Vue) {
-    throw new Error("single-spa-vuejs must be passed opts.Vue");
+    throw Error("single-spa-vue must be passed opts.Vue");
   }
 
   if (!opts.appOptions) {
-    throw new Error("single-spa-vuejs must be passed opts.appOptions");
+    throw Error("single-spa-vue must be passed opts.appOptions");
+  }
+
+  if (opts.appOptions.el && typeof opts.appOptions.el !== "string") {
+    throw Error(
+      `single-spa-vue: appOptions.el must be a string CSS selector, or not provided at all. Was given ${typeof opts
+        .appOptions.el}`
+    );
   }
 
   // Just a shared object to store the mounted object state
