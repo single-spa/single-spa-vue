@@ -64,6 +64,96 @@ describe("single-spa-vue", () => {
       });
   });
 
+  it(`uses the appOptions.el selector string if provided, and wraps the single-spa application in a container div`, () => {
+    document.body.appendChild(
+      Object.assign(document.createElement("div"), {
+        id: "my-custom-el"
+      })
+    );
+
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {
+        el: "#my-custom-el"
+      }
+    });
+
+    expect(document.querySelector(`#my-custom-el .single-spa-container`)).toBe(
+      null
+    );
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        expect(
+          document.querySelector(`#my-custom-el .single-spa-container`)
+        ).toBeTruthy();
+
+        document.querySelector("#my-custom-el").remove();
+      });
+  });
+
+  it(`uses the appOptions.el domElement if provided, and wraps the single-spa application in a container div`, () => {
+    const domEl = Object.assign(document.createElement("div"), {
+      id: "my-custom-el-2"
+    });
+
+    document.body.appendChild(domEl);
+
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {
+        el: domEl
+      }
+    });
+
+    expect(
+      document.querySelector(`#my-custom-el-2 .single-spa-container`)
+    ).toBe(null);
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        expect(
+          document.querySelector(`#my-custom-el-2 .single-spa-container`)
+        ).toBeTruthy();
+        domEl.remove();
+      });
+  });
+
+  it(`throws an error if appOptions.el is not passed in as a string or dom element`, () => {
+    expect(() => {
+      new singleSpaVue({
+        Vue,
+        appOptions: {
+          // `el` should be a string or DOM Element
+          el: 1233
+        }
+      });
+    }).toThrow(/must be a string CSS selector/);
+  });
+
+  it(`throws an error if appOptions.el doesn't exist in the dom`, () => {
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {
+        el: "#doesnt-exist-in-dom"
+      }
+    });
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        fail("should throw validation error");
+      })
+      .catch(err => {
+        expect(err.message).toMatch("the dom element must exist in the dom");
+      });
+  });
+
   it(`reuses the default dom element container on the second mount`, () => {
     const lifecycles = new singleSpaVue({
       Vue,
@@ -96,7 +186,6 @@ describe("single-spa-vue", () => {
 
   it(`passes appOptions straight through to Vue`, () => {
     const appOptions = {
-      el: document.createElement("div"),
       something: "random"
     };
     const lifecycles = new singleSpaVue({
@@ -109,7 +198,6 @@ describe("single-spa-vue", () => {
       .then(() => lifecycles.mount(props))
       .then(() => {
         expect(Vue).toHaveBeenCalled();
-        expect(Vue.mock.calls[0][0].el).toBeTruthy();
         expect(Vue.mock.calls[0][0].something).toBeTruthy();
         return lifecycles.unmount(props);
       });
