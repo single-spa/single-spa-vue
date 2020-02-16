@@ -64,7 +64,7 @@ describe("single-spa-vue", () => {
       });
   });
 
-  it(`uses the appOptions.el selector if provided, and wraps the single-spa application in a container div`, () => {
+  it(`uses the appOptions.el selector string if provided, and wraps the single-spa application in a container div`, () => {
     document.body.appendChild(
       Object.assign(document.createElement("div"), {
         id: "my-custom-el"
@@ -94,13 +94,42 @@ describe("single-spa-vue", () => {
       });
   });
 
-  it(`throws an error if appOptions.el is not passed in as a string`, () => {
+  it(`uses the appOptions.el domElement if provided, and wraps the single-spa application in a container div`, () => {
+    const domEl = Object.assign(document.createElement("div"), {
+      id: "my-custom-el-2"
+    });
+
+    document.body.appendChild(domEl);
+
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {
+        el: domEl
+      }
+    });
+
+    expect(
+      document.querySelector(`#my-custom-el-2 .single-spa-container`)
+    ).toBe(null);
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        expect(
+          document.querySelector(`#my-custom-el-2 .single-spa-container`)
+        ).toBeTruthy();
+        domEl.remove();
+      });
+  });
+
+  it(`throws an error if appOptions.el is not passed in as a string or dom element`, () => {
     expect(() => {
       new singleSpaVue({
         Vue,
         appOptions: {
-          // `el` should be a string
-          el: document.createElement("div")
+          // `el` should be a string or DOM Element
+          el: 1233
         }
       });
     }).toThrow(/must be a string CSS selector/);

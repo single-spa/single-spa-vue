@@ -25,9 +25,13 @@ export default function singleSpaVue(userOpts) {
     throw Error("single-spa-vue must be passed opts.appOptions");
   }
 
-  if (opts.appOptions.el && typeof opts.appOptions.el !== "string") {
+  if (
+    opts.appOptions.el &&
+    typeof opts.appOptions.el !== "string" &&
+    !(opts.appOptions.el instanceof HTMLElement)
+  ) {
     throw Error(
-      `single-spa-vue: appOptions.el must be a string CSS selector, or not provided at all. Was given ${typeof opts
+      `single-spa-vue: appOptions.el must be a string CSS selector, an HTMLElement, or not provided at all. Was given ${typeof opts
         .appOptions.el}`
     );
   }
@@ -60,11 +64,15 @@ function mount(opts, mountedInstances, props) {
 
     let domEl;
     if (appOptions.el) {
-      domEl = document.querySelector(appOptions.el);
-      if (!domEl) {
-        throw Error(
-          `If appOptions.el is provided to single-spa-vue, the dom element must exist in the dom. Was provided as ${appOptions.el}`
-        );
+      if (typeof appOptions.el === "string") {
+        domEl = document.querySelector(appOptions.el);
+        if (!domEl) {
+          throw Error(
+            `If appOptions.el is provided to single-spa-vue, the dom element must exist in the dom. Was provided as ${appOptions.el}`
+          );
+        }
+      } else {
+        domEl = appOptions.el;
       }
     } else {
       const htmlId = `single-spa-application:${props.name}`;
