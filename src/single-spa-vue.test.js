@@ -281,4 +281,31 @@ describe("single-spa-vue", () => {
         return lifecycles.unmount(props);
       });
   });
+
+  it(`mounts 2 instances and then unmounts them`, () => {
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {}
+    });
+    const props2 = { name: "test-app-2" };
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => {
+        return lifecycles.mount(props).then(instance => {
+          expect(instance instanceof Vue).toBeTruthy();
+        });
+      })
+      .then(() => {
+        return lifecycles.mount(props2).then(instance => {
+          expect(instance instanceof Vue).toBeTruthy();
+        });
+      })
+      .then(() => {
+        return lifecycles.unmount(props);
+      })
+      .then(() => {
+        return lifecycles.unmount(props2);
+      });
+  });
 });
