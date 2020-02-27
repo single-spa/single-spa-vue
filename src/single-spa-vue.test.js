@@ -281,4 +281,57 @@ describe("single-spa-vue", () => {
         return lifecycles.unmount(props);
       });
   });
+
+  it(`mounts 2 instances and then unmounts them`, () => {
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {}
+    });
+
+    let obj1 = {
+      props: props,
+      spy: null
+    };
+    let obj2 = {
+      props: { name: "test-app-2" },
+      spy: null
+    };
+
+    function mount(obj) {
+      return lifecycles.mount(obj.props).then(instance => {
+        expect(instance instanceof Vue).toBeTruthy();
+
+        // since $destroy is always pointing to the same function (as it is defined it beforeEach()),
+        // it is needed to be overwritten
+        const oldDestroy = instance.$destroy;
+        instance.$destroy = (...args) => {
+          return oldDestroy.apply(instance, args);
+        };
+
+        obj.spy = jest.spyOn(instance, "$destroy");
+      });
+    }
+
+    function unmount(obj) {
+      expect(obj.spy).not.toBeCalled();
+      return lifecycles.unmount(obj.props).then(() => {
+        expect(obj.spy).toBeCalled();
+      });
+    }
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => {
+        return mount(obj1);
+      })
+      .then(() => {
+        return mount(obj2);
+      })
+      .then(() => {
+        return unmount(obj1);
+      })
+      .then(() => {
+        return unmount(obj2);
+      });
+  });
 });

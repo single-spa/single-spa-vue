@@ -37,6 +37,7 @@ export default function singleSpaVue(userOpts) {
   }
 
   // Just a shared object to store the mounted object state
+  // key - name of single-spa app, since it is unique
   let mountedInstances = {};
 
   return {
@@ -56,6 +57,7 @@ function bootstrap(opts) {
 }
 
 function mount(opts, mountedInstances, props) {
+  const instance = {};
   return Promise.resolve().then(() => {
     const appOptions = { ...opts.appOptions };
     if (props.domElement && !appOptions.el) {
@@ -96,7 +98,7 @@ function mount(opts, mountedInstances, props) {
       domEl.appendChild(singleSpaContainer);
     }
 
-    mountedInstances.domEl = domEl;
+    instance.domEl = domEl;
 
     if (!appOptions.render && !appOptions.template && opts.rootComponent) {
       appOptions.render = h => h(opts.rootComponent);
@@ -108,37 +110,40 @@ function mount(opts, mountedInstances, props) {
 
     appOptions.data = { ...appOptions.data, ...props };
 
-    mountedInstances.instance = new opts.Vue(appOptions);
-    if (mountedInstances.instance.bind) {
-      mountedInstances.instance = mountedInstances.instance.bind(
-        mountedInstances.instance
-      );
+    instance.vueInstance = new opts.Vue(appOptions);
+    if (instance.vueInstance.bind) {
+      instance.vueInstance = instance.vueInstance.bind(instance.vueInstance);
     }
-    return mountedInstances.instance;
+
+    mountedInstances[props.name] = instance;
+
+    return instance.vueInstance;
   });
 }
 
 function update(opts, mountedInstances, props) {
   return Promise.resolve().then(() => {
+    const instance = mountedInstances[props.name];
     const data = {
       ...(opts.appOptions.data || {}),
       ...props
     };
     for (let prop in data) {
-      mountedInstances.instance[prop] = data[prop];
+      instance.vueInstance[prop] = data[prop];
     }
   });
 }
 
-function unmount(opts, mountedInstances) {
+function unmount(opts, mountedInstances, props) {
   return Promise.resolve().then(() => {
-    mountedInstances.instance.$destroy();
-    mountedInstances.instance.$el.innerHTML = "";
-    delete mountedInstances.instance;
+    const instance = mountedInstances[props.name];
+    instance.vueInstance.$destroy();
+    instance.vueInstance.$el.innerHTML = "";
+    delete instance.vueInstance;
 
-    if (mountedInstances.domEl) {
-      mountedInstances.domEl.innerHTML = "";
-      delete mountedInstances.domEl;
+    if (instance.domEl) {
+      instance.domEl.innerHTML = "";
+      delete instance.domEl;
     }
   });
 }
