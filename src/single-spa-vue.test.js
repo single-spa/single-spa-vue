@@ -94,7 +94,7 @@ describe("single-spa-vue", () => {
       });
   });
 
-  it(`uses the appOptions.el domElement if provided, and wraps the single-spa application in a container div`, () => {
+  it(`uses the appOptions.el domElement (with id) if provided, and wraps the single-spa application in a container div`, () => {
     const domEl = Object.assign(document.createElement("div"), {
       id: "my-custom-el-2"
     });
@@ -116,8 +116,49 @@ describe("single-spa-vue", () => {
       .bootstrap(props)
       .then(() => lifecycles.mount(props))
       .then(() => {
+        expect(Vue).toHaveBeenCalledWith({
+          data: {
+            name: "test-app"
+          },
+          el: `#my-custom-el-2 .single-spa-container`
+        });
+      })
+      .then(() => {
         expect(
           document.querySelector(`#my-custom-el-2 .single-spa-container`)
+        ).toBeTruthy();
+        domEl.remove();
+      });
+  });
+
+  it(`uses the appOptions.el domElement (without id) if provided, and wraps the single-spa application in a container div`, () => {
+    const domEl = document.createElement("div");
+
+    document.body.appendChild(domEl);
+
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {
+        el: domEl
+      }
+    });
+
+    const htmlId = CSS.escape("single-spa-application:test-app");
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        expect(Vue).toHaveBeenCalledWith({
+          data: {
+            name: "test-app"
+          },
+          el: `#${htmlId} .single-spa-container`
+        });
+      })
+      .then(() => {
+        expect(
+          document.querySelector(`#${htmlId} .single-spa-container`)
         ).toBeTruthy();
         domEl.remove();
       });
