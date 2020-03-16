@@ -75,6 +75,10 @@ function mount(opts, mountedInstances, props) {
         }
       } else {
         domEl = appOptions.el;
+        if (!domEl.id) {
+          domEl.id = `single-spa-application:${props.name}`;
+        }
+        appOptions.el = `#${CSS.escape(domEl.id)}`;
       }
     } else {
       const htmlId = `single-spa-application:${props.name}`;
