@@ -126,7 +126,7 @@ function mount(opts, mountedInstances, props) {
       window.__VUE_DEVTOOLS_GLOBAL_HOOK__.Vue =
         instance.vueInstance.constructor;
     }
-    
+
     return instance.vueInstance;
   });
 }
@@ -155,7 +155,7 @@ function unmount(opts, mountedInstances, props) {
     if (window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
       window.__VUE_DEVTOOLS_GLOBAL_HOOK__.Vue = null;
     }
-    
+
     if (instance.domEl) {
       instance.domEl.innerHTML = "";
       delete instance.domEl;
