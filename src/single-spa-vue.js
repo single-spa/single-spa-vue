@@ -123,8 +123,7 @@ function mount(opts, mountedInstances, props) {
 
     // attach Vue instance to the vue devtools
     if (window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
-      window.__VUE_DEVTOOLS_GLOBAL_HOOK__.Vue =
-        instance.vueInstance.constructor;
+      window.__VUE_DEVTOOLS_GLOBAL_HOOK__.Vue = opts.Vue;
     }
 
     return instance.vueInstance;
