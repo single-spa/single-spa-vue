@@ -2,9 +2,12 @@ import "css.escape";
 
 const defaultOpts = {
   // required opts
-  Vue: null,
   appOptions: null,
-  template: null
+  template: null,
+
+  // sometimes require opts
+  Vue: null,
+  createApp: null
 };
 
 export default function singleSpaVue(userOpts) {
@@ -17,8 +20,8 @@ export default function singleSpaVue(userOpts) {
     ...userOpts
   };
 
-  if (!opts.Vue) {
-    throw Error("single-spa-vue must be passed opts.Vue");
+  if (!opts.Vue && !opts.createApp) {
+    throw Error("single-spa-vue must be passed opts.Vue or opts.createApp");
   }
 
   if (!opts.appOptions) {
@@ -35,6 +38,8 @@ export default function singleSpaVue(userOpts) {
         .appOptions.el}`
     );
   }
+
+  opts.createApp = opts.createApp || (opts.Vue && opts.Vue.createApp);
 
   // Just a shared object to store the mounted object state
   // key - name of single-spa app, since it is unique
@@ -112,11 +117,16 @@ function mount(opts, mountedInstances, props) {
       appOptions.data = {};
     }
 
-    appOptions.data = { ...appOptions.data, ...props };
+    appOptions.data = () => ({ ...appOptions.data, ...props });
 
-    instance.vueInstance = new opts.Vue(appOptions);
-    if (instance.vueInstance.bind) {
-      instance.vueInstance = instance.vueInstance.bind(instance.vueInstance);
+    if (opts.createApp) {
+      instance.vueInstance = opts.createApp(appOptions);
+      instance.vueInstance.mount(appOptions.el);
+    } else {
+      instance.vueInstance = new opts.Vue(appOptions);
+      if (instance.vueInstance.bind) {
+        instance.vueInstance = instance.vueInstance.bind(instance.vueInstance);
+      }
     }
 
     mountedInstances[props.name] = instance;
@@ -141,8 +151,12 @@ function update(opts, mountedInstances, props) {
 function unmount(opts, mountedInstances, props) {
   return Promise.resolve().then(() => {
     const instance = mountedInstances[props.name];
-    instance.vueInstance.$destroy();
-    instance.vueInstance.$el.innerHTML = "";
+    if (opts.createApp) {
+      instance.vueInstance.unmount(instance.domEl);
+    } else {
+      instance.vueInstance.$destroy();
+      instance.vueInstance.$el.innerHTML = "";
+    }
     delete instance.vueInstance;
 
     if (instance.domEl) {
