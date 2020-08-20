@@ -116,11 +116,12 @@ describe("single-spa-vue", () => {
       .bootstrap(props)
       .then(() => lifecycles.mount(props))
       .then(() => {
-        expect(Vue).toHaveBeenCalledWith({
-          data: {
-            name: "test-app"
-          },
-          el: `#my-custom-el-2 .single-spa-container`
+        expect(Vue).toHaveBeenCalled();
+        expect(Vue.mock.calls[0][0].el).toBe(
+          "#my-custom-el-2 .single-spa-container"
+        );
+        expect(Vue.mock.calls[0][0].data()).toEqual({
+          name: "test-app"
         });
       })
       .then(() => {
@@ -149,11 +150,11 @@ describe("single-spa-vue", () => {
       .bootstrap(props)
       .then(() => lifecycles.mount(props))
       .then(() => {
-        expect(Vue).toHaveBeenCalledWith({
-          data: {
-            name: "test-app"
-          },
-          el: `#${htmlId} .single-spa-container`
+        expect(Vue.mock.calls[0][0].el).toBe(
+          `#${htmlId} .single-spa-container`
+        );
+        expect(Vue.mock.calls[0][0].data()).toEqual({
+          name: "test-app"
         });
       })
       .then(() => {
@@ -280,9 +281,9 @@ describe("single-spa-vue", () => {
       .then(() => lifecycles.mount(props))
       .then(() => {
         expect(Vue).toHaveBeenCalled();
-        expect(Vue.mock.calls[0][0].data).toBeTruthy();
-        expect(Vue.mock.calls[0][0].data.name).toBe("test-app");
-        expect(Vue.mock.calls[0][0].data.someCustomThing).toBe("hi");
+        expect(Vue.mock.calls[0][0].data()).toBeTruthy();
+        expect(Vue.mock.calls[0][0].data().name).toBe("test-app");
+        expect(Vue.mock.calls[0][0].data().someCustomThing).toBe("hi");
         return lifecycles.unmount(props);
       });
   });
@@ -374,5 +375,67 @@ describe("single-spa-vue", () => {
       .then(() => {
         return unmount(obj2);
       });
+  });
+
+  it(`works with Vue 3 when you provide the full Vue module as an opt`, async () => {
+    Vue = {
+      createApp: jest.fn()
+    };
+
+    const appMock = jest.fn();
+    appMock.mount = jest.fn();
+    appMock.unmount = jest.fn();
+
+    window.appMock = appMock;
+
+    Vue.createApp.mockReturnValue(appMock);
+
+    const props = { name: "vue3-app" };
+
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {}
+    });
+
+    await lifecycles.bootstrap(props);
+    await lifecycles.mount(props);
+
+    expect(Vue.createApp).toHaveBeenCalled();
+    // Vue 3 requires the data to be a function
+    expect(typeof Vue.createApp.mock.calls[0][0].data).toBe("function");
+    expect(appMock.mount).toHaveBeenCalled();
+
+    await lifecycles.unmount(props);
+    expect(appMock.unmount).toHaveBeenCalled();
+  });
+
+  it(`works with Vue 3 when you provide the createApp function opt`, async () => {
+    const createApp = jest.fn();
+
+    const appMock = jest.fn();
+    appMock.mount = jest.fn();
+    appMock.unmount = jest.fn();
+
+    window.appMock = appMock;
+
+    createApp.mockReturnValue(appMock);
+
+    const props = { name: "vue3-app" };
+
+    const lifecycles = new singleSpaVue({
+      createApp,
+      appOptions: {}
+    });
+
+    await lifecycles.bootstrap(props);
+    await lifecycles.mount(props);
+
+    expect(createApp).toHaveBeenCalled();
+    // Vue 3 requires the data to be a function
+    expect(typeof createApp.mock.calls[0][0].data).toBe("function");
+    expect(appMock.mount).toHaveBeenCalled();
+
+    await lifecycles.unmount(props);
+    expect(appMock.unmount).toHaveBeenCalled();
   });
 });
