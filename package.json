@@ -12,6 +12,20 @@
     "prettier": "prettier --write './**'",
     "lint": "eslint src"
   },
+  "moduleNameMapper": {
+    "vue$": "vue/dist/vue"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+      ".*\\.(vue)$": "vue-jest"
+    }
+  },
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged && concurrently -n yarn:test yarn:lint"
@@ -47,6 +61,8 @@
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
     "@types/jest": "^25.1.2",
+    "@vue/test-utils": "^1.0.4",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^25.1.0",
     "concurrently": "^5.1.0",
@@ -64,6 +80,9 @@
     "rollup": "^1.31.1",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-terser": "^5.2.0",
+    "vue": "^2.6.12",
+    "vue-jest": "^3.0.6",
+    "vue-template-compiler": "^2.6.12",
     "tsd": "^0.13.1"
   },
   "tsd": {
