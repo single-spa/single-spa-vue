@@ -5,7 +5,7 @@ describe("Parcel", () => {
   it("should not render without a config", () => {
     const wrapper = mount(Parcel);
 
-    expect(wrapper.find(".parcel-container").exists()).toBe(false);
+    expect(wrapper.find(".no-config").exists()).toBe(true);
   });
 
   it("should render if config is provided", () => {
