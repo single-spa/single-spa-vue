@@ -12,9 +12,6 @@
     "prettier": "prettier --write './**'",
     "lint": "eslint src"
   },
-  "moduleNameMapper": {
-    "vue$": "vue/dist/vue"
-  },
   "jest": {
     "moduleFileExtensions": [
       "js",
