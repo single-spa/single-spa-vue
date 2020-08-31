@@ -11,10 +11,20 @@ describe("Parcel", () => {
   it("should render if config is provided", () => {
     const wrapper = mount(Parcel, {
       propsData: {
-        config: { aloha: "malaho" }
+        config: { appendTo: "div" }
       }
     });
 
     expect(wrapper.find(".parcel-container").exists()).toBe(true);
+  });
+
+  it("should append parcel to provided element", () => {
+    const wrapper = mount(Parcel, {
+      propsData: {
+        config: { appendTo: "span" }
+      }
+    });
+
+    expect(wrapper.get("span").exists()).toBe(true);
   });
 });

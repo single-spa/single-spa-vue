@@ -14,7 +14,8 @@ export default {
   },
   render(createElement) {
     if (!!this.config) {
-      return createElement("div", { class: "parcel-container" });
+      const appendTo = this.config.appendTo || "div";
+      return createElement(appendTo, { class: "parcel-container" });
     }
 
     return this.noConfig(createElement);
