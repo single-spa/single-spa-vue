@@ -1,24 +1,26 @@
+<template>
+  <div ref="container" v-if="config"></div>
+</template>
+
 <script>
 export default {
   props: {
     config: Object
   },
   methods: {
-    noConfig(createElement) {
-      return createElement(
-        "div",
-        { class: "no-config" },
-        "<Parcel /> was mounted without a configuration object"
-      );
+    buildParcelElement(config) {
+      const { appendTo, elClass } = config;
+
+      const parcelEl = document.createElement(appendTo);
+      parcelEl.className = elClass;
+
+      this.$refs.container.appendChild(parcelEl);
     }
   },
-  render(createElement) {
+  mounted() {
     if (!!this.config) {
-      const appendTo = this.config.appendTo || "div";
-      return createElement(appendTo, { class: "parcel-container" });
+      this.buildParcelElement(this.config);
     }
-
-    return this.noConfig(createElement);
   }
 };
 </script>
