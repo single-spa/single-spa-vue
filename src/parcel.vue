@@ -9,10 +9,16 @@ export default {
   },
   methods: {
     buildParcelElement(config) {
-      const { appendTo, elClass } = config;
+      const { appendTo = "div", elClass, wrapStyle } = config;
 
       const parcelEl = document.createElement(appendTo);
       parcelEl.className = elClass;
+
+      if (wrapStyle) {
+        Object.keys(wrapStyle).forEach(key => {
+          parcelEl.style[key] = wrapStyle[key];
+        });
+      }
 
       this.$refs.container.appendChild(parcelEl);
     }
