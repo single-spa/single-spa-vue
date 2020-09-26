@@ -131,6 +131,9 @@ function mount(opts, mountedInstances, props) {
       if (instance.vueInstance.bind) {
         instance.vueInstance = instance.vueInstance.bind(instance.vueInstance);
       }
+      if (opts.handleInstance) {
+        opts.handleInstance(instance.vueInstance);
+      }
     }
 
     mountedInstances[props.name] = instance;

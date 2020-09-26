@@ -26,20 +26,25 @@ describe("single-spa-vue", () => {
   });
 
   it(`calls new Vue() during mount and mountedInstances.instance.$destroy() on unmount`, () => {
+    const handleInstance = jest.fn();
+
     const lifecycles = new singleSpaVue({
       Vue,
-      appOptions: {}
+      appOptions: {},
+      handleInstance
     });
 
     return lifecycles
       .bootstrap(props)
       .then(() => {
         expect(Vue).not.toHaveBeenCalled();
+        expect(handleInstance).not.toHaveBeenCalled();
         expect($destroy).not.toHaveBeenCalled();
         return lifecycles.mount(props);
       })
       .then(() => {
         expect(Vue).toHaveBeenCalled();
+        expect(handleInstance).toHaveBeenCalled();
         expect($destroy).not.toHaveBeenCalled();
         return lifecycles.unmount(props);
       })
