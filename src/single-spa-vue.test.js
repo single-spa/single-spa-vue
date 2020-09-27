@@ -26,20 +26,25 @@ describe("single-spa-vue", () => {
   });
 
   it(`calls new Vue() during mount and mountedInstances.instance.$destroy() on unmount`, () => {
+    const handleInstance = jest.fn();
+
     const lifecycles = new singleSpaVue({
       Vue,
-      appOptions: {}
+      appOptions: {},
+      handleInstance
     });
 
     return lifecycles
       .bootstrap(props)
       .then(() => {
         expect(Vue).not.toHaveBeenCalled();
+        expect(handleInstance).not.toHaveBeenCalled();
         expect($destroy).not.toHaveBeenCalled();
         return lifecycles.mount(props);
       })
       .then(() => {
         expect(Vue).toHaveBeenCalled();
+        expect(handleInstance).toHaveBeenCalled();
         expect($destroy).not.toHaveBeenCalled();
         return lifecycles.unmount(props);
       })
@@ -392,9 +397,12 @@ describe("single-spa-vue", () => {
 
     const props = { name: "vue3-app" };
 
+    const handleInstance = jest.fn();
+
     const lifecycles = new singleSpaVue({
       Vue,
-      appOptions: {}
+      appOptions: {},
+      handleInstance
     });
 
     await lifecycles.bootstrap(props);
@@ -403,6 +411,7 @@ describe("single-spa-vue", () => {
     expect(Vue.createApp).toHaveBeenCalled();
     // Vue 3 requires the data to be a function
     expect(typeof Vue.createApp.mock.calls[0][0].data).toBe("function");
+    expect(handleInstance).toHaveBeenCalledWith(appMock);
     expect(appMock.mount).toHaveBeenCalled();
 
     await lifecycles.unmount(props);
@@ -422,9 +431,12 @@ describe("single-spa-vue", () => {
 
     const props = { name: "vue3-app" };
 
+    const handleInstance = jest.fn();
+
     const lifecycles = new singleSpaVue({
       createApp,
-      appOptions: {}
+      appOptions: {},
+      handleInstance
     });
 
     await lifecycles.bootstrap(props);
@@ -433,6 +445,7 @@ describe("single-spa-vue", () => {
     expect(createApp).toHaveBeenCalled();
     // Vue 3 requires the data to be a function
     expect(typeof createApp.mock.calls[0][0].data).toBe("function");
+    expect(handleInstance).toHaveBeenCalledWith(appMock);
     expect(appMock.mount).toHaveBeenCalled();
 
     await lifecycles.unmount(props);

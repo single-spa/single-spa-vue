@@ -7,7 +7,8 @@ const defaultOpts = {
 
   // sometimes require opts
   Vue: null,
-  createApp: null
+  createApp: null,
+  handleInstance: null
 };
 
 export default function singleSpaVue(userOpts) {
@@ -121,11 +122,17 @@ function mount(opts, mountedInstances, props) {
 
     if (opts.createApp) {
       instance.vueInstance = opts.createApp(appOptions);
+      if (opts.handleInstance) {
+        opts.handleInstance(instance.vueInstance);
+      }
       instance.vueInstance.mount(appOptions.el);
     } else {
       instance.vueInstance = new opts.Vue(appOptions);
       if (instance.vueInstance.bind) {
         instance.vueInstance = instance.vueInstance.bind(instance.vueInstance);
+      }
+      if (opts.handleInstance) {
+        opts.handleInstance(instance.vueInstance);
       }
     }
 
