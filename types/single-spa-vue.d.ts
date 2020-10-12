@@ -6,6 +6,7 @@ declare module "single-spa-vue" {
   type AppOptions = {
     el?: string | HTMLElement;
     data?: any;
+    [key: string]: any;
   };
 
   interface BaseSingleSpaVueOptions {
