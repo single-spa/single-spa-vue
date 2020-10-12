@@ -6,7 +6,9 @@
   "scripts": {
     "prepublishOnly": "yarn build",
     "build": "rimraf lib && rollup -c",
-    "test": "cross-env BABEL_ENV=test jest",
+    "test": "concurrently -n w: 'yarn:test:*'",
+    "test:integration": "cross-env BABEL_ENV=test jest",
+    "test:types": "tsd",
     "prettier": "prettier --write './**'",
     "lint": "eslint src"
   },
@@ -61,6 +63,14 @@
     "rimraf": "^3.0.2",
     "rollup": "^1.31.1",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-terser": "^5.2.0"
+    "rollup-plugin-terser": "^5.2.0",
+    "tsd": "^0.13.1"
+  },
+  "tsd": {
+    "compilerOptions": {
+      "lib": [
+        "dom"
+      ]
+    }
   }
 }
