@@ -6,7 +6,9 @@
   "scripts": {
     "prepublishOnly": "yarn build",
     "build": "rimraf lib && rollup -c",
-    "test": "cross-env BABEL_ENV=test jest",
+    "test": "concurrently -n w: 'yarn:test:*'",
+    "test:integration": "cross-env BABEL_ENV=test jest",
+    "test:types": "tsd",
     "prettier": "prettier --write './**'",
     "lint": "eslint src"
   },
