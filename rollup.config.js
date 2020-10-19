@@ -36,7 +36,6 @@ export default [
       }),
       resolve(),
       commonjs(),
-      terser(),
       vuePlugin()
     ]
   }

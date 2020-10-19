@@ -27,7 +27,6 @@ export default {
       }
 
       this.$refs.container.appendChild(parcelEl);
-      console.log("REFS: ", document.getElementsByClassName(elClass).length);
     },
     addThingToDo(action, thing) {
       if (this.hasError && action !== "unmount") {
@@ -63,7 +62,6 @@ export default {
     }
   },
   mounted() {
-    console.log("Mounted", this.config);
     if (!!this.config) {
       this.addThingToDo("mount", () => this.buildParcelElement());
     }

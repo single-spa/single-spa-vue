@@ -4,11 +4,11 @@ import Parcel from "./parcel.vue";
 describe("Parcel", () => {
   it("should not render without a config", () => {
     const wrapper = mount(Parcel);
-    expect(wrapper.vm.$refs).toStrictEqual({});
+    expect(wrapper.find(".parcel-element").exists()).toBe(false);
   });
 
-  it("should render if config is provided", () => {
-    const wrapper = mount(Parcel, {
+  it("should render if config is provided", async () => {
+    const wrapper = await mount(Parcel, {
       propsData: {
         config: {
           appendTo: "div",
@@ -20,8 +20,8 @@ describe("Parcel", () => {
     expect(wrapper.find(".parcel-element").exists()).toBe(true);
   });
 
-  it("should append to div if no 'appendTo' is provided", () => {
-    const wrapper = mount(Parcel, {
+  it("should append to div if no 'appendTo' is provided", async () => {
+    const wrapper = await mount(Parcel, {
       propsData: {
         config: {
           elClass: "div-element"
@@ -29,22 +29,25 @@ describe("Parcel", () => {
       }
     });
 
-    const elTag = wrapper.get(".div-element").element.tagName;
+    const elTag = wrapper.find(".div-element").element.tagName;
     expect(elTag).toBe("DIV");
   });
 
-  it("should append parcel to provided element", () => {
-    const wrapper = mount(Parcel, {
+  it("should append parcel to provided element", async () => {
+    const wrapper = await mount(Parcel, {
       propsData: {
-        config: { appendTo: "span", elClass: "span-el" }
+        config: {
+          appendTo: "span",
+          elClass: "span-el"
+        }
       }
     });
 
     expect(wrapper.get("span").exists()).toBe(true);
   });
 
-  it("should use provided style for the parcel element", () => {
-    const wrapper = mount(Parcel, {
+  it("should use provided style for the parcel element", async () => {
+    const wrapper = await mount(Parcel, {
       propsData: {
         config: {
           elClass: "parcel-el",
