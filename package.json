@@ -2,10 +2,17 @@
   "name": "single-spa-vue",
   "version": "1.10.1",
   "description": "a single-spa plugin for vue.js applications",
-  "main": "lib/single-spa-vue.js",
+  "main": "dist/umd/single-spa-vue.js",
+  "module": "dist/esm/single-spa-vue.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/single-spa-vue.js",
+      "require": "./dist/umd/single-spa-vue.js"
+    }
+  },
   "scripts": {
     "prepublishOnly": "yarn build",
-    "build": "rimraf lib && rollup -c",
+    "build": "rimraf dist && rollup -c",
     "test": "concurrently -n w: 'yarn:test:*'",
     "test:integration": "cross-env BABEL_ENV=test jest",
     "test:types": "tsd",
@@ -22,8 +29,7 @@
     "url": "git+https://github.com/single-spa/single-spa-vue.git"
   },
   "files": [
-    "lib",
-    "src",
+    "dist",
     "types"
   ],
   "types": "types/single-spa-vue.d.ts",
