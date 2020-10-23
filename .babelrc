@@ -6,7 +6,8 @@
         [
           "@babel/preset-env",
           {
-            "targets": "current node"
+            "targets": "current node",
+            "bugfixes": true
           }
         ]
       ]
