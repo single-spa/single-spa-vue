@@ -6,7 +6,7 @@ import { terser } from "rollup-plugin-terser";
 export default [
   createConfig("umd"),
   createConfig("esm"),
-  createConfig("system")
+  createConfig("system"),
 ];
 
 function createConfig(format) {
@@ -16,15 +16,15 @@ function createConfig(format) {
       dir: `dist/${format}`,
       name: format === "umd" ? "singleSpaVue" : null,
       sourcemap: true,
-      format: format
+      format: format,
     },
     plugins: [
       babel({
-        exclude: "node_modules/**"
+        exclude: "node_modules/**",
       }),
       resolve(),
       commonjs(),
-      terser()
-    ]
+      terser(),
+    ],
   };
 }

@@ -8,7 +8,7 @@ const defaultOpts = {
   // sometimes require opts
   Vue: null,
   createApp: null,
-  handleInstance: null
+  handleInstance: null,
 };
 
 export default function singleSpaVue(userOpts) {
@@ -18,7 +18,7 @@ export default function singleSpaVue(userOpts) {
 
   const opts = {
     ...defaultOpts,
-    ...userOpts
+    ...userOpts,
   };
 
   if (!opts.Vue && !opts.createApp) {
@@ -50,13 +50,13 @@ export default function singleSpaVue(userOpts) {
     bootstrap: bootstrap.bind(null, opts, mountedInstances),
     mount: mount.bind(null, opts, mountedInstances),
     unmount: unmount.bind(null, opts, mountedInstances),
-    update: update.bind(null, opts, mountedInstances)
+    update: update.bind(null, opts, mountedInstances),
   };
 }
 
 function bootstrap(opts) {
   if (opts.loadRootComponent) {
-    return opts.loadRootComponent().then(root => (opts.rootComponent = root));
+    return opts.loadRootComponent().then((root) => (opts.rootComponent = root));
   } else {
     return Promise.resolve();
   }
@@ -111,7 +111,7 @@ function mount(opts, mountedInstances, props) {
     instance.domEl = domEl;
 
     if (!appOptions.render && !appOptions.template && opts.rootComponent) {
-      appOptions.render = h => h(opts.rootComponent);
+      appOptions.render = (h) => h(opts.rootComponent);
     }
 
     if (!appOptions.data) {
@@ -147,7 +147,7 @@ function update(opts, mountedInstances, props) {
     const instance = mountedInstances[props.name];
     const data = {
       ...(opts.appOptions.data || {}),
-      ...props
+      ...props,
     };
     for (let prop in data) {
       instance.vueInstance[prop] = data[prop];
