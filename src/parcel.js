@@ -2,7 +2,7 @@ import * as Vue from "vue";
 
 export default {
   props: {
-    config: Object,
+    config: [Object, Promise],
     wrapWith: String,
     wrapClass: String,
     wrapStyle: Object,

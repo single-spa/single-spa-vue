@@ -103,7 +103,6 @@ describe("Parcel", () => {
     await tick();
 
     expect(config.mounted).toBe(false);
-    expect(wrapper.find("button#parcel").exists()).toBe(false);
   });
 
   it("forwards parcelProps to the parcel", async () => {
@@ -196,6 +195,23 @@ describe("Parcel", () => {
       // <parcel> vue component updates
       numUsers: 10,
     });
+  });
+
+  it(`allows you to pass in a promise that resolves with the config object`, async () => {
+    const config = createParcelConfig();
+
+    const wrapper = await mount(Parcel, {
+      propsData: {
+        config: Promise.resolve(config),
+        mountParcel: mountRootParcel,
+      },
+    });
+
+    await tick();
+
+    expect(wrapper.emitted().parcelMounted).toBeTruthy();
+    expect(config.mounted).toBe(true);
+    expect(wrapper.find("button#parcel").exists()).toBe(true);
   });
 });
 
