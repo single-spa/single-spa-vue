@@ -9,7 +9,7 @@ describe("single-spa-vue", () => {
   beforeEach(() => {
     Vue = jest.fn();
 
-    Vue.mockImplementation(function() {
+    Vue.mockImplementation(function () {
       this.$destroy = $destroy;
       this.$el = { innerHTML: "" };
     });
@@ -20,7 +20,7 @@ describe("single-spa-vue", () => {
   });
 
   afterEach(() => {
-    document.querySelectorAll(cssSelector).forEach(node => {
+    document.querySelectorAll(cssSelector).forEach((node) => {
       node.remove();
     });
   });
@@ -31,7 +31,7 @@ describe("single-spa-vue", () => {
     const lifecycles = new singleSpaVue({
       Vue,
       appOptions: {},
-      handleInstance
+      handleInstance,
     });
 
     return lifecycles
@@ -56,7 +56,7 @@ describe("single-spa-vue", () => {
   it(`creates a dom element container for you if you don't provide one`, () => {
     const lifecycles = new singleSpaVue({
       Vue,
-      appOptions: {}
+      appOptions: {},
     });
 
     expect(document.getElementById(domElId)).toBe(null);
@@ -72,15 +72,15 @@ describe("single-spa-vue", () => {
   it(`uses the appOptions.el selector string if provided, and wraps the single-spa application in a container div`, () => {
     document.body.appendChild(
       Object.assign(document.createElement("div"), {
-        id: "my-custom-el"
+        id: "my-custom-el",
       })
     );
 
     const lifecycles = new singleSpaVue({
       Vue,
       appOptions: {
-        el: "#my-custom-el"
-      }
+        el: "#my-custom-el",
+      },
     });
 
     expect(document.querySelector(`#my-custom-el .single-spa-container`)).toBe(
@@ -101,7 +101,7 @@ describe("single-spa-vue", () => {
 
   it(`uses the appOptions.el domElement (with id) if provided, and wraps the single-spa application in a container div`, () => {
     const domEl = Object.assign(document.createElement("div"), {
-      id: "my-custom-el-2"
+      id: "my-custom-el-2",
     });
 
     document.body.appendChild(domEl);
@@ -109,8 +109,8 @@ describe("single-spa-vue", () => {
     const lifecycles = new singleSpaVue({
       Vue,
       appOptions: {
-        el: domEl
-      }
+        el: domEl,
+      },
     });
 
     expect(
@@ -126,7 +126,7 @@ describe("single-spa-vue", () => {
           "#my-custom-el-2 .single-spa-container"
         );
         expect(Vue.mock.calls[0][0].data()).toEqual({
-          name: "test-app"
+          name: "test-app",
         });
       })
       .then(() => {
@@ -145,8 +145,8 @@ describe("single-spa-vue", () => {
     const lifecycles = new singleSpaVue({
       Vue,
       appOptions: {
-        el: domEl
-      }
+        el: domEl,
+      },
     });
 
     const htmlId = CSS.escape("single-spa-application:test-app");
@@ -159,7 +159,7 @@ describe("single-spa-vue", () => {
           `#${htmlId} .single-spa-container`
         );
         expect(Vue.mock.calls[0][0].data()).toEqual({
-          name: "test-app"
+          name: "test-app",
         });
       })
       .then(() => {
@@ -176,8 +176,8 @@ describe("single-spa-vue", () => {
         Vue,
         appOptions: {
           // `el` should be a string or DOM Element
-          el: 1233
-        }
+          el: 1233,
+        },
       });
     }).toThrow(/must be a string CSS selector/);
   });
@@ -186,8 +186,8 @@ describe("single-spa-vue", () => {
     const lifecycles = new singleSpaVue({
       Vue,
       appOptions: {
-        el: "#doesnt-exist-in-dom"
-      }
+        el: "#doesnt-exist-in-dom",
+      },
     });
 
     return lifecycles
@@ -196,7 +196,7 @@ describe("single-spa-vue", () => {
       .then(() => {
         fail("should throw validation error");
       })
-      .catch(err => {
+      .catch((err) => {
         expect(err.message).toMatch("the dom element must exist in the dom");
       });
   });
@@ -204,7 +204,7 @@ describe("single-spa-vue", () => {
   it(`reuses the default dom element container on the second mount`, () => {
     const lifecycles = new singleSpaVue({
       Vue,
-      appOptions: {}
+      appOptions: {},
     });
 
     expect(document.querySelectorAll(cssSelector).length).toBe(0);
@@ -233,11 +233,11 @@ describe("single-spa-vue", () => {
 
   it(`passes appOptions straight through to Vue`, () => {
     const appOptions = {
-      something: "random"
+      something: "random",
     };
     const lifecycles = new singleSpaVue({
       Vue,
-      appOptions
+      appOptions,
     });
 
     return lifecycles
@@ -254,7 +254,7 @@ describe("single-spa-vue", () => {
     const opts = {
       Vue,
       appOptions: {},
-      loadRootComponent: jest.fn()
+      loadRootComponent: jest.fn(),
     };
 
     opts.loadRootComponent.mockReturnValue(Promise.resolve({}));
@@ -278,7 +278,7 @@ describe("single-spa-vue", () => {
 
     const lifecycles = new singleSpaVue({
       Vue,
-      appOptions: {}
+      appOptions: {},
     });
 
     return lifecycles
@@ -296,7 +296,7 @@ describe("single-spa-vue", () => {
   it(`mounts into the single-spa-container div if you don't provide an 'el' in appOptions`, () => {
     const lifecycles = new singleSpaVue({
       Vue,
-      appOptions: {}
+      appOptions: {},
     });
 
     return lifecycles
@@ -314,12 +314,12 @@ describe("single-spa-vue", () => {
   it(`mounts will return promise with vue instance`, () => {
     const lifecycles = new singleSpaVue({
       Vue,
-      appOptions: {}
+      appOptions: {},
     });
     return lifecycles
       .bootstrap(props)
       .then(() =>
-        lifecycles.mount(props).then(instance => {
+        lifecycles.mount(props).then((instance) => {
           expect(Vue).toHaveBeenCalled();
           expect(instance instanceof Vue).toBeTruthy();
         })
@@ -332,20 +332,20 @@ describe("single-spa-vue", () => {
   it(`mounts 2 instances and then unmounts them`, () => {
     const lifecycles = new singleSpaVue({
       Vue,
-      appOptions: {}
+      appOptions: {},
     });
 
     let obj1 = {
       props: props,
-      spy: null
+      spy: null,
     };
     let obj2 = {
       props: { name: "test-app-2" },
-      spy: null
+      spy: null,
     };
 
     function mount(obj) {
-      return lifecycles.mount(obj.props).then(instance => {
+      return lifecycles.mount(obj.props).then((instance) => {
         expect(instance instanceof Vue).toBeTruthy();
 
         // since $destroy is always pointing to the same function (as it is defined it beforeEach()),
@@ -384,7 +384,7 @@ describe("single-spa-vue", () => {
 
   it(`works with Vue 3 when you provide the full Vue module as an opt`, async () => {
     Vue = {
-      createApp: jest.fn()
+      createApp: jest.fn(),
     };
 
     const appMock = jest.fn();
@@ -402,7 +402,7 @@ describe("single-spa-vue", () => {
     const lifecycles = new singleSpaVue({
       Vue,
       appOptions: {},
-      handleInstance
+      handleInstance,
     });
 
     await lifecycles.bootstrap(props);
@@ -436,7 +436,7 @@ describe("single-spa-vue", () => {
     const lifecycles = new singleSpaVue({
       createApp,
       appOptions: {},
-      handleInstance
+      handleInstance,
     });
 
     await lifecycles.bootstrap(props);

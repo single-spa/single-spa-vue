@@ -26,8 +26,8 @@ describe("Parcel", () => {
     const wrapper = await mount(Parcel, {
       propsData: {
         config: createParcelConfig(),
-        mountParcel: mountRootParcel
-      }
+        mountParcel: mountRootParcel,
+      },
     });
 
     await tick();
@@ -42,8 +42,8 @@ describe("Parcel", () => {
     const wrapper = await mount(Parcel, {
       propsData: {
         config: createParcelConfig(),
-        mountParcel: mountRootParcel
-      }
+        mountParcel: mountRootParcel,
+      },
     });
 
     await tick();
@@ -60,10 +60,10 @@ describe("Parcel", () => {
         wrapWith: "span",
         wrapClass: "the-class",
         wrapStyle: {
-          backgroundColor: "red"
+          backgroundColor: "red",
         },
-        mountParcel: mountRootParcel
-      }
+        mountParcel: mountRootParcel,
+      },
     });
 
     await tick();
@@ -76,18 +76,10 @@ describe("Parcel", () => {
       "background-color: red;"
     );
 
-    expect(
-      wrapper
-        .find("span")
-        .find("button#parcel")
-        .exists()
-    ).toBe(true);
-    expect(
-      wrapper
-        .find("span")
-        .find("button#parcel")
-        .text()
-    ).toBe("The parcel button");
+    expect(wrapper.find("span").find("button#parcel").exists()).toBe(true);
+    expect(wrapper.find("span").find("button#parcel").text()).toBe(
+      "The parcel button"
+    );
   });
 
   it("should unmount properly", async () => {
@@ -95,8 +87,8 @@ describe("Parcel", () => {
     const wrapper = await mount(Parcel, {
       propsData: {
         config,
-        mountParcel: mountRootParcel
-      }
+        mountParcel: mountRootParcel,
+      },
     });
 
     await tick();
@@ -121,9 +113,9 @@ describe("Parcel", () => {
         config,
         mountParcel: mountRootParcel,
         parcelProps: {
-          foo: "bar"
-        }
-      }
+          foo: "bar",
+        },
+      },
     });
 
     await tick();
@@ -141,9 +133,9 @@ describe("Parcel", () => {
         config,
         mountParcel: mountRootParcel,
         parcelProps: {
-          numUsers: 10
-        }
-      }
+          numUsers: 10,
+        },
+      },
     });
 
     await tick();
@@ -151,20 +143,20 @@ describe("Parcel", () => {
     expect(wrapper.emitted().parcelMounted).toBeTruthy();
     expect(config.mounted).toBe(true);
     expect(config.props).toMatchObject({
-      numUsers: 10
+      numUsers: 10,
     });
 
     wrapper.setProps({
       parcelProps: {
-        numUsers: 100
-      }
+        numUsers: 100,
+      },
     });
 
     await tick();
 
     expect(wrapper.emitted().parcelUpdated).toBeTruthy();
     expect(config.props).toMatchObject({
-      numUsers: 100
+      numUsers: 100,
     });
   });
 
@@ -176,9 +168,9 @@ describe("Parcel", () => {
         config,
         mountParcel: mountRootParcel,
         parcelProps: {
-          numUsers: 10
-        }
-      }
+          numUsers: 10,
+        },
+      },
     });
 
     await tick();
@@ -186,13 +178,13 @@ describe("Parcel", () => {
     expect(wrapper.emitted().parcelMounted).toBeTruthy();
     expect(config.mounted).toBe(true);
     expect(config.props).toMatchObject({
-      numUsers: 10
+      numUsers: 10,
     });
 
     wrapper.setProps({
       parcelProps: {
-        numUsers: 100
-      }
+        numUsers: 100,
+      },
     });
 
     await tick();
@@ -202,7 +194,7 @@ describe("Parcel", () => {
       // since the parcel config doesn't have an update function,
       // the numUsers prop on the parcel won't update when the
       // <parcel> vue component updates
-      numUsers: 10
+      numUsers: 10,
     });
   });
 });
@@ -224,11 +216,11 @@ function createParcelConfig(opts = {}) {
     },
     mounted: false,
     props: null,
-    numUpdates: 0
+    numUpdates: 0,
   };
 
   if (opts.update) {
-    result.update = async props => {
+    result.update = async (props) => {
       result.props = props;
       result.numUpdates++;
     };
@@ -238,7 +230,7 @@ function createParcelConfig(opts = {}) {
 }
 
 function tick() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve);
   });
 }

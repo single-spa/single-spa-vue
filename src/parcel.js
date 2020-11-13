@@ -7,7 +7,7 @@ export default {
     wrapClass: String,
     wrapStyle: Object,
     mountParcel: Function,
-    parcelProps: Object
+    parcelProps: Object,
   },
   render(h) {
     // Vue 2 works differently than Vue 3
@@ -25,7 +25,7 @@ export default {
   },
   data() {
     return {
-      hasError: false
+      hasError: false,
     };
   },
   methods: {
@@ -42,7 +42,7 @@ export default {
 
           return thing.apply(this, args);
         })
-        .catch(err => {
+        .catch((err) => {
           this.nextThingToDo = Promise.resolve();
           this.hasError = true;
 
@@ -77,9 +77,9 @@ export default {
     getParcelProps() {
       return {
         domElement: this.$refs.container,
-        ...(this.parcelProps || {})
+        ...(this.parcelProps || {}),
       };
-    }
+    },
   },
   mounted() {
     if (!this.config) {
@@ -103,7 +103,7 @@ export default {
     parcelProps: {
       handler(parcelProps) {
         this.addThingToDo("update", this.singleSpaUpdate);
-      }
-    }
-  }
+      },
+    },
+  },
 };

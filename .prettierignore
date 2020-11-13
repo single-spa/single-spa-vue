@@ -1,5 +1,5 @@
 .prettierignore
 .gitignore
-lib
+dist
 LICENSE
 yarn.lock
