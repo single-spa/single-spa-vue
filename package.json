@@ -7,7 +7,7 @@
     "prepublishOnly": "yarn build",
     "build": "rimraf lib && rollup -c",
     "test": "concurrently -n w: 'yarn:test:*'",
-    "test:integration": "cross-env BABEL_ENV=test jest",
+    "test:jest": "cross-env BABEL_ENV=test jest",
     "test:types": "tsd",
     "prettier": "prettier --write './**'",
     "lint": "eslint src"
@@ -77,11 +77,11 @@
     "rollup": "^1.31.1",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-terser": "^5.2.0",
-    "rollup-plugin-vue": "^5.1.9",
+    "single-spa": "^5.8.2",
+    "tsd": "^0.13.1",
     "vue": "^2.6.12",
     "vue-jest": "^3.0.6",
-    "vue-template-compiler": "^2.6.12",
-    "tsd": "^0.13.1"
+    "vue-template-compiler": "^2.6.12"
   },
   "tsd": {
     "compilerOptions": {

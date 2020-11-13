@@ -2,7 +2,6 @@ import babel from "rollup-plugin-babel";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import { terser } from "rollup-plugin-terser";
-import vuePlugin from "rollup-plugin-vue";
 
 export default [
   {
@@ -23,10 +22,10 @@ export default [
     ]
   },
   {
-    input: "./src/parcel.vue",
+    input: "./src/parcel.js",
     output: {
       dir: "lib",
-      name: "parcel",
+      name: "singleSpaVueParcel",
       sourcemap: true,
       format: "umd"
     },
@@ -35,8 +34,8 @@ export default [
         exclude: "node_modules/**"
       }),
       resolve(),
-      commonjs(),
-      vuePlugin()
-    ]
+      commonjs()
+    ],
+    external: ["vue"]
   }
 ];
