@@ -21,6 +21,7 @@
     "test:jest": "cross-env BABEL_ENV=test jest",
     "test:types": "tsd",
     "format": "prettier --write .",
+    "check-format": "prettier --check .",
     "lint": "eslint src"
   },
   "jest": {
