@@ -10,7 +10,7 @@ declare module "single-spa-vue" {
   };
 
   interface BaseSingleSpaVueOptions {
-    appOptions: AppOptions;
+    appOptions: AppOptions | (() => Promise<AppOptions>);
     template?: string;
     loadRootComponent?(): Promise<any>;
   }

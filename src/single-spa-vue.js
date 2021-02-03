@@ -62,83 +62,91 @@ function bootstrap(opts) {
   }
 }
 
+function resolveAppOptions(opts) {
+  if (typeof opts.appOptions === "function") {
+    return opts.appOptions();
+  }
+  return Promise.resolve({ ...opts.appOptions });
+}
+
 function mount(opts, mountedInstances, props) {
   const instance = {};
   return Promise.resolve().then(() => {
-    const appOptions = { ...opts.appOptions };
-    if (props.domElement && !appOptions.el) {
-      appOptions.el = props.domElement;
-    }
+    return resolveAppOptions(opts).then((appOptions) => {
+      if (props.domElement && !appOptions.el) {
+        appOptions.el = props.domElement;
+      }
 
-    let domEl;
-    if (appOptions.el) {
-      if (typeof appOptions.el === "string") {
-        domEl = document.querySelector(appOptions.el);
-        if (!domEl) {
-          throw Error(
-            `If appOptions.el is provided to single-spa-vue, the dom element must exist in the dom. Was provided as ${appOptions.el}`
-          );
+      let domEl;
+      if (appOptions.el) {
+        if (typeof appOptions.el === "string") {
+          domEl = document.querySelector(appOptions.el);
+          if (!domEl) {
+            throw Error(
+              `If appOptions.el is provided to single-spa-vue, the dom element must exist in the dom. Was provided as ${appOptions.el}`
+            );
+          }
+        } else {
+          domEl = appOptions.el;
+          if (!domEl.id) {
+            domEl.id = `single-spa-application:${props.name}`;
+          }
+          appOptions.el = `#${CSS.escape(domEl.id)}`;
         }
       } else {
-        domEl = appOptions.el;
-        if (!domEl.id) {
-          domEl.id = `single-spa-application:${props.name}`;
+        const htmlId = `single-spa-application:${props.name}`;
+        appOptions.el = `#${CSS.escape(htmlId)}`;
+        domEl = document.getElementById(htmlId);
+        if (!domEl) {
+          domEl = document.createElement("div");
+          domEl.id = htmlId;
+          document.body.appendChild(domEl);
         }
-        appOptions.el = `#${CSS.escape(domEl.id)}`;
       }
-    } else {
-      const htmlId = `single-spa-application:${props.name}`;
-      appOptions.el = `#${CSS.escape(htmlId)}`;
-      domEl = document.getElementById(htmlId);
-      if (!domEl) {
-        domEl = document.createElement("div");
-        domEl.id = htmlId;
-        document.body.appendChild(domEl);
+
+      appOptions.el = appOptions.el + " .single-spa-container";
+
+      // single-spa-vue@>=2 always REPLACES the `el` instead of appending to it.
+      // We want domEl to stick around and not be replaced. So we tell Vue to mount
+      // into a container div inside of the main domEl
+      if (!domEl.querySelector(".single-spa-container")) {
+        const singleSpaContainer = document.createElement("div");
+        singleSpaContainer.className = "single-spa-container";
+        domEl.appendChild(singleSpaContainer);
       }
-    }
 
-    appOptions.el = appOptions.el + " .single-spa-container";
+      instance.domEl = domEl;
 
-    // single-spa-vue@>=2 always REPLACES the `el` instead of appending to it.
-    // We want domEl to stick around and not be replaced. So we tell Vue to mount
-    // into a container div inside of the main domEl
-    if (!domEl.querySelector(".single-spa-container")) {
-      const singleSpaContainer = document.createElement("div");
-      singleSpaContainer.className = "single-spa-container";
-      domEl.appendChild(singleSpaContainer);
-    }
-
-    instance.domEl = domEl;
-
-    if (!appOptions.render && !appOptions.template && opts.rootComponent) {
-      appOptions.render = (h) => h(opts.rootComponent);
-    }
-
-    if (!appOptions.data) {
-      appOptions.data = {};
-    }
-
-    appOptions.data = () => ({ ...appOptions.data, ...props });
-
-    if (opts.createApp) {
-      instance.vueInstance = opts.createApp(appOptions);
-      if (opts.handleInstance) {
-        opts.handleInstance(instance.vueInstance);
+      if (!appOptions.render && !appOptions.template && opts.rootComponent) {
+        appOptions.render = (h) => h(opts.rootComponent);
       }
-      instance.vueInstance.mount(appOptions.el);
-    } else {
-      instance.vueInstance = new opts.Vue(appOptions);
-      if (instance.vueInstance.bind) {
-        instance.vueInstance = instance.vueInstance.bind(instance.vueInstance);
-      }
-      if (opts.handleInstance) {
-        opts.handleInstance(instance.vueInstance);
-      }
-    }
 
-    mountedInstances[props.name] = instance;
+      if (!appOptions.data) {
+        appOptions.data = {};
+      }
 
-    return instance.vueInstance;
+      appOptions.data = () => ({ ...appOptions.data, ...props });
+
+      if (opts.createApp) {
+        instance.vueInstance = opts.createApp(appOptions);
+        if (opts.handleInstance) {
+          opts.handleInstance(instance.vueInstance);
+        }
+        instance.vueInstance.mount(appOptions.el);
+      } else {
+        instance.vueInstance = new opts.Vue(appOptions);
+        if (instance.vueInstance.bind) {
+          instance.vueInstance = instance.vueInstance.bind(instance.vueInstance);
+        }
+        if (opts.handleInstance) {
+          opts.handleInstance(instance.vueInstance);
+        }
+      }
+
+      mountedInstances[props.name] = instance;
+
+      return instance.vueInstance;
+    });
   });
 }
 
