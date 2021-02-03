@@ -136,7 +136,9 @@ function mount(opts, mountedInstances, props) {
       } else {
         instance.vueInstance = new opts.Vue(appOptions);
         if (instance.vueInstance.bind) {
-          instance.vueInstance = instance.vueInstance.bind(instance.vueInstance);
+          instance.vueInstance = instance.vueInstance.bind(
+            instance.vueInstance
+          );
         }
         if (opts.handleInstance) {
           opts.handleInstance(instance.vueInstance);

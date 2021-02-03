@@ -3,3 +3,4 @@
 dist
 LICENSE
 yarn.lock
+pnpm-lock.yaml
