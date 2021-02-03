@@ -250,6 +250,27 @@ describe("single-spa-vue", () => {
       });
   });
 
+  it(`resolves appOptions from Promise and passes straight through to Vue`, () => {
+    const appOptions = () =>
+      Promise.resolve({
+        something: "random",
+      });
+
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions,
+    });
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        expect(Vue).toHaveBeenCalled();
+        expect(Vue.mock.calls[0][0].something).toBeTruthy();
+        return lifecycles.unmount(props);
+      });
+  });
+
   it(`implements a render function for you if you provide loadRootComponent`, () => {
     const opts = {
       Vue,
