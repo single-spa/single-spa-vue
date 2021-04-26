@@ -104,7 +104,6 @@ function mount(opts, mountedInstances, props) {
         }
       }
 
-     
       if (!opts.replaceMode) {
         appOptions.el = appOptions.el + " .single-spa-container";
       }
