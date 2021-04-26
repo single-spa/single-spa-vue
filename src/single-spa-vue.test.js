@@ -472,4 +472,55 @@ describe("single-spa-vue", () => {
     await lifecycles.unmount(props);
     expect(appMock.unmount).toHaveBeenCalled();
   });
+
+  it(`mounts a Vue instance in specified element, if replaceMode is true`, () => {
+    const domEl = document.createElement("div");
+    const htmlId = CSS.escape("single-spa-application:test-app");
+
+    document.body.appendChild(domEl);
+
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {
+        el: domEl,
+      },
+      replaceMode: true,
+    });
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() => expect(Vue.mock.calls[0][0].el).toBe(`#${htmlId}`))
+      .then(() => {
+        expect(document.querySelector(`#${htmlId}`)).toBeTruthy();
+        domEl.remove();
+      });
+  });
+
+  it(`mounts a Vue instance with ' .single-spa-container' if replaceMode is false or not provided`, () => {
+    const domEl = document.createElement("div");
+    const htmlId = CSS.escape("single-spa-application:test-app");
+
+    document.body.appendChild(domEl);
+
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {
+        el: domEl,
+      },
+    });
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() =>
+        expect(Vue.mock.calls[0][0].el).toBe(`#${htmlId} .single-spa-container`)
+      )
+      .then(() => {
+        expect(
+          document.querySelector(`#${htmlId} .single-spa-container`)
+        ).toBeTruthy();
+        domEl.remove();
+      });
+  });
 });
