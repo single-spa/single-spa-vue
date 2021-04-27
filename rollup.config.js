@@ -1,4 +1,4 @@
-import babel from "rollup-plugin-babel";
+import { babel } from "@rollup/plugin-babel";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import { terser } from "rollup-plugin-terser";
@@ -22,6 +22,7 @@ function createConfig(format) {
       plugins: [
         babel({
           exclude: "node_modules/**",
+          babelHelpers: "inline",
         }),
         resolve(),
         commonjs(),
@@ -39,6 +40,7 @@ function createConfig(format) {
       plugins: [
         babel({
           exclude: "node_modules/**",
+          babelHelpers: "inline",
         }),
         resolve(),
         commonjs(),
