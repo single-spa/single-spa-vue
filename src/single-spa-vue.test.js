@@ -271,6 +271,27 @@ describe("single-spa-vue", () => {
       });
   });
 
+  it(`appOptions function will recieve the props provided at mount`, () => {
+    const appOptions = jest.fn((props) =>
+      Promise.resolve({
+        props,
+      })
+    );
+
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions,
+    });
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        expect(appOptions.mock.calls[0][0]).toBe(props);
+        return lifecycles.unmount(props);
+      });
+  });
+
   it(`implements a render function for you if you provide loadRootComponent`, () => {
     const opts = {
       Vue,
