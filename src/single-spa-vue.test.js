@@ -292,6 +292,23 @@ describe("single-spa-vue", () => {
       });
   });
 
+  it("`handleInstance` function will recieve the props provided at mount", () => {
+    const handleInstance = jest.fn();
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {},
+      handleInstance,
+    });
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        expect(handleInstance.mock.calls[0][1]).toBe(props);
+        return lifecycles.unmount(props);
+      });
+  });
+
   it(`implements a render function for you if you provide loadRootComponent`, () => {
     const opts = {
       Vue,
@@ -453,7 +470,7 @@ describe("single-spa-vue", () => {
     expect(Vue.createApp).toHaveBeenCalled();
     // Vue 3 requires the data to be a function
     expect(typeof Vue.createApp.mock.calls[0][0].data).toBe("function");
-    expect(handleInstance).toHaveBeenCalledWith(appMock);
+    expect(handleInstance).toHaveBeenCalledWith(appMock, props);
     expect(appMock.mount).toHaveBeenCalled();
 
     await lifecycles.unmount(props);
@@ -487,7 +504,7 @@ describe("single-spa-vue", () => {
     expect(createApp).toHaveBeenCalled();
     // Vue 3 requires the data to be a function
     expect(typeof createApp.mock.calls[0][0].data).toBe("function");
-    expect(handleInstance).toHaveBeenCalledWith(appMock);
+    expect(handleInstance).toHaveBeenCalledWith(appMock, props);
     expect(appMock.mount).toHaveBeenCalled();
 
     await lifecycles.unmount(props);

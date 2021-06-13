@@ -132,7 +132,7 @@ function mount(opts, mountedInstances, props) {
       if (opts.createApp) {
         instance.vueInstance = opts.createApp(appOptions);
         if (opts.handleInstance) {
-          opts.handleInstance(instance.vueInstance);
+          opts.handleInstance(instance.vueInstance, props);
         }
         instance.vueInstance.mount(appOptions.el);
       } else {
@@ -143,7 +143,7 @@ function mount(opts, mountedInstances, props) {
           );
         }
         if (opts.handleInstance) {
-          opts.handleInstance(instance.vueInstance);
+          opts.handleInstance(instance.vueInstance, props);
         }
       }
 
