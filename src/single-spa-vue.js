@@ -134,7 +134,7 @@ function mount(opts, mountedInstances, props) {
         if (opts.handleInstance) {
           opts.handleInstance(instance.vueInstance);
         }
-        instance.vueInstance.mount(appOptions.el);
+        instance.root = instance.vueInstance.mount(appOptions.el);
       } else {
         instance.vueInstance = new opts.Vue(appOptions);
         if (instance.vueInstance.bind) {
@@ -161,8 +161,9 @@ function update(opts, mountedInstances, props) {
       ...(opts.appOptions.data || {}),
       ...props,
     };
+    const root = instance.root || instance.vueInstance;
     for (let prop in data) {
-      instance.vueInstance[prop] = data[prop];
+      root[prop] = data[prop];
     }
   });
 }
