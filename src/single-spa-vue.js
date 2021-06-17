@@ -62,9 +62,9 @@ function bootstrap(opts) {
   }
 }
 
-function resolveAppOptions(opts) {
+function resolveAppOptions(opts, props) {
   if (typeof opts.appOptions === "function") {
-    return opts.appOptions();
+    return opts.appOptions(props);
   }
   return Promise.resolve({ ...opts.appOptions });
 }
@@ -72,7 +72,7 @@ function resolveAppOptions(opts) {
 function mount(opts, mountedInstances, props) {
   const instance = {};
   return Promise.resolve().then(() => {
-    return resolveAppOptions(opts).then((appOptions) => {
+    return resolveAppOptions(opts, props).then((appOptions) => {
       if (props.domElement && !appOptions.el) {
         appOptions.el = props.domElement;
       }
@@ -132,7 +132,7 @@ function mount(opts, mountedInstances, props) {
       if (opts.createApp) {
         instance.vueInstance = opts.createApp(appOptions);
         if (opts.handleInstance) {
-          opts.handleInstance(instance.vueInstance);
+          opts.handleInstance(instance.vueInstance, props);
         }
         instance.root = instance.vueInstance.mount(appOptions.el);
       } else {
@@ -143,7 +143,7 @@ function mount(opts, mountedInstances, props) {
           );
         }
         if (opts.handleInstance) {
-          opts.handleInstance(instance.vueInstance);
+          opts.handleInstance(instance.vueInstance, props);
         }
       }
 
