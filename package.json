@@ -17,6 +17,7 @@
   "scripts": {
     "prepublishOnly": "yarn build",
     "build": "rimraf dist && rollup -c",
+    "build:watch": "rollup -cw",
     "test": "concurrently -n w: 'yarn:test:*'",
     "test:jest": "cross-env BABEL_ENV=test jest",
     "test:types": "tsd",

@@ -1,5 +1,7 @@
 import * as Vue from "vue";
 
+const lessThanVue3 = !Vue.version || /^[012]\..+/.test(Vue.version);
+
 export default {
   props: {
     config: [Object, Promise],
@@ -96,7 +98,7 @@ export default {
       this.addThingToDo("mount", this.singleSpaMount);
     }
   },
-  destroyed() {
+  [lessThanVue3 ? "destroyed" : "unmounted"]() {
     this.addThingToDo("unmount", this.singleSpaUnmount);
   },
   watch: {
