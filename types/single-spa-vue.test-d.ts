@@ -19,8 +19,8 @@ singleSpaVue(optsVue2);
 const createApp = () => {};
 const optsVue3: SingleSpaOptsVue3 = {
   createApp,
-  appOptions,
-  handleInstance: (instance: any) => {},
+  appOptions: (opts: object, props: object) => Promise.resolve(),
+  handleInstance: (instance: any, props: object) => {},
 };
 expectAssignable<SingleSpaVueOpts>(optsVue3);
 singleSpaVue(optsVue3);
