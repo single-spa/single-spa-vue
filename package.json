@@ -15,10 +15,10 @@
     }
   },
   "scripts": {
-    "prepublishOnly": "yarn build",
+    "prepublishOnly": "pnpm run build",
     "build": "rimraf dist && rollup -c",
     "build:watch": "rollup -cw",
-    "test": "concurrently -n w: 'yarn:test:*'",
+    "test": "concurrently -n w: 'pnpm:test:*'",
     "test:jest": "cross-env BABEL_ENV=test jest",
     "test:types": "tsd",
     "format": "prettier --write .",
@@ -32,7 +32,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged && concurrently -n yarn:test yarn:lint"
+      "pre-commit": "pretty-quick --staged && concurrently -n pnpm:test pnpm:lint"
     }
   },
   "repository": {
