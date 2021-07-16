@@ -10,7 +10,12 @@ declare module "single-spa-vue" {
   };
 
   interface BaseSingleSpaVueOptions {
-    appOptions: AppOptions | ((props?: object) => Promise<AppOptions>);
+    appOptions:
+      | AppOptions
+      | ((
+          opts: SingleSpaOptsVue2 | SingleSpaOptsVue3,
+          props: object
+        ) => Promise<AppOptions>);
     template?: string;
     loadRootComponent?(): Promise<any>;
   }
@@ -21,7 +26,7 @@ declare module "single-spa-vue" {
 
   type SingleSpaOptsVue3 = BaseSingleSpaVueOptions & {
     createApp: any;
-    handleInstance?(instance: any): void;
+    handleInstance?(instance: any, props: object): void;
   };
 
   type SingleSpaVueOpts = SingleSpaOptsVue2 | SingleSpaOptsVue3;
