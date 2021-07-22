@@ -25,8 +25,9 @@ declare module "single-spa-vue" {
   };
 
   type SingleSpaOptsVue3 = BaseSingleSpaVueOptions & {
-    createApp: any;
-    handleInstance?(instance: any, props: object): void;
+    createApp(appOptions: AppOptions): any;
+    handleInstance?(instance: any, props: object): void | Promise<void>;
+    replaceMode?: boolean;
   };
 
   type SingleSpaVueOpts = SingleSpaOptsVue2 | SingleSpaOptsVue3;

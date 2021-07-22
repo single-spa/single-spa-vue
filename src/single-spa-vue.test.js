@@ -511,6 +511,76 @@ describe("single-spa-vue", () => {
     expect(appMock.unmount).toHaveBeenCalled();
   });
 
+  it(`support async handleInstance with creatApp to allow App resolve all children routes before rehydration`, async () => {
+    const createApp = jest.fn();
+
+    const appMock = jest.fn();
+    appMock.mount = jest.fn();
+    appMock.unmount = jest.fn();
+
+    window.appMock = appMock;
+
+    createApp.mockReturnValue(appMock);
+
+    const props = { name: "vue3-app" };
+
+    let handleInstancePromise;
+
+    const handleInstance = jest.fn(async () => {
+      handleInstancePromise = new Promise((resolve) => {
+        setTimeout(resolve);
+      });
+
+      await handleInstancePromise;
+    });
+
+    const lifecycles = new singleSpaVue({
+      createApp,
+      appOptions: {},
+      handleInstance,
+    });
+
+    await lifecycles.bootstrap(props);
+
+    await lifecycles.mount(props);
+
+    expect(handleInstance).toHaveBeenCalledWith(appMock, props);
+    expect(createApp).toHaveBeenCalled();
+    // Vue 3 requires the data to be a function
+    expect(typeof createApp.mock.calls[0][0].data).toBe("function");
+
+    expect(appMock.mount).toHaveBeenCalled();
+
+    await lifecycles.unmount(props);
+    expect(appMock.unmount).toHaveBeenCalled();
+  });
+
+  it(`support async handleInstance without createApp to allow App resolve all children routes before rehydration`, async () => {
+    let handleInstancePromise;
+
+    const handleInstance = jest.fn(async () => {
+      handleInstancePromise = new Promise((resolve) => {
+        setTimeout(resolve);
+      });
+
+      await handleInstancePromise;
+    });
+
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {},
+      handleInstance,
+    });
+
+    await lifecycles.bootstrap(props);
+
+    await lifecycles.mount(props);
+
+    expect(handleInstance).toHaveBeenCalled();
+
+    await lifecycles.unmount(props);
+  });
+
   it(`mounts a Vue instance in specified element, if replaceMode is true`, () => {
     const domEl = document.createElement("div");
     const htmlId = CSS.escape("single-spa-application:test-app");
