@@ -132,9 +132,15 @@ function mount(opts, mountedInstances, props) {
       if (opts.createApp) {
         instance.vueInstance = opts.createApp(appOptions);
         if (opts.handleInstance) {
-          opts.handleInstance(instance.vueInstance, props);
+          return Promise.resolve(
+            opts.handleInstance(instance.vueInstance, props)
+          ).then(function () {
+            instance.root = instance.vueInstance.mount(appOptions.el);
+            mountedInstances[props.name] = instance;
+
+            return instance.vueInstance;
+          });
         }
-        instance.root = instance.vueInstance.mount(appOptions.el);
       } else {
         instance.vueInstance = new opts.Vue(appOptions);
         if (instance.vueInstance.bind) {
@@ -143,7 +149,12 @@ function mount(opts, mountedInstances, props) {
           );
         }
         if (opts.handleInstance) {
-          opts.handleInstance(instance.vueInstance, props);
+          return Promise.resolve(
+            opts.handleInstance(instance.vueInstance, props)
+          ).then(function () {
+            mountedInstances[props.name] = instance;
+            return instance.vueInstance;
+          });
         }
       }
 
