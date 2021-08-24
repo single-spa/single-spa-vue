@@ -140,6 +140,8 @@ function mount(opts, mountedInstances, props) {
 
             return instance.vueInstance;
           });
+        } else {
+          instance.root = instance.vueInstance.mount(appOptions.el);
         }
       } else {
         instance.vueInstance = new opts.Vue(appOptions);
