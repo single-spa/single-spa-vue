@@ -1,6 +1,6 @@
-import { AppProps } from "single-spa";
-
 declare module "single-spa-vue" {
+  import { AppProps } from "single-spa";
+
   export default function singleSpaVue(
     opts: SingleSpaVueOpts
   ): SingleSpaVueLifecycles;
@@ -8,7 +8,7 @@ declare module "single-spa-vue" {
   type AppOptions = {
     el?: string | HTMLElement;
     data?: any;
-    render: ((this: AppProps) => any) | ((h: any) => any);
+    render?: (this: AppProps) => any;
     [key: string]: any;
   };
 
