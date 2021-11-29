@@ -8,13 +8,14 @@ declare module "single-spa-vue" {
   type AppOptions = {
     el?: string | HTMLElement;
     data?: any;
-    render: (this: AppProps) => any;
+    render: ((this: AppProps) => any) | ((h: any) => any);
     [key: string]: any;
   };
 
   interface BaseSingleSpaVueOptions {
     appOptions:
       | AppOptions
+      | AppProps
       | ((
           opts: SingleSpaOptsVue2 | SingleSpaOptsVue3,
           props: object
