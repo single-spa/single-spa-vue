@@ -83,7 +83,7 @@
     "rimraf": "^3.0.2",
     "rollup": "^2.32.1",
     "rollup-plugin-terser": "^7.0.2",
-    "single-spa": "^5.8.2",
+    "single-spa": "^5.9.1",
     "tsd": "^0.13.1",
     "vue": "^2.6.12",
     "vue-template-compiler": "^2.6.12"
