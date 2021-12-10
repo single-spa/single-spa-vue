@@ -128,9 +128,12 @@ function mount(opts, mountedInstances, props) {
       }
 
       const originData = appOptions.data;
-      appOptions.data = function() {
-        const data = typeof originData === "function" ? originData.call(this, this) : originData;
-        return {...data, ...props};
+      appOptions.data = function () {
+        const data =
+          typeof originData === "function"
+            ? originData.call(this, this)
+            : originData;
+        return { ...data, ...props };
       };
 
       if (opts.createApp) {
