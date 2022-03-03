@@ -38,7 +38,7 @@ export default {
 
       this.nextThingToDo = (this.nextThingToDo || Promise.resolve())
         .then((...args) => {
-          if (this.unmounted && action !== 'unmount') {
+          if (this.unmounted && action !== "unmount") {
             return;
           }
 
@@ -65,7 +65,7 @@ export default {
       });
     },
     singleSpaUnmount() {
-      if (this.parcel && this.parcel.getStatus() === 'MOUNTED') {
+      if (this.parcel && this.parcel.getStatus() === "MOUNTED") {
         return this.parcel.unmount();
       }
     },
