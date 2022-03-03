@@ -38,7 +38,7 @@ export default {
 
       this.nextThingToDo = (this.nextThingToDo || Promise.resolve())
         .then((...args) => {
-          if (this.unmounted && action === "unmount") {
+          if (this.unmounted) {
             return;
           }
 
