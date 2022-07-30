@@ -126,8 +126,10 @@ function mount(opts, mountedInstances, props) {
       if (!appOptions.data) {
         appOptions.data = {};
       }
+      
+      let ops_data = appOptions.data;
 
-      appOptions.data = () => ({ ...appOptions.data, ...props });
+      appOptions.data = () => ({ ...ops_data, ...props });
 
       if (opts.createApp) {
         instance.vueInstance = opts.createApp(appOptions);
