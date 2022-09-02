@@ -3,6 +3,12 @@ import singleSpaVue from "./single-spa-vue";
 const domElId = `single-spa-application:test-app`;
 const cssSelector = `#single-spa-application\\:test-app`;
 
+const singleSpaContainerDiv = document.createElement("div");
+singleSpaContainerDiv.className = "single-spa-container";
+
+const singleSpaApplicationDiv = document.createElement("div");
+singleSpaApplicationDiv.id = domElId;
+
 describe("single-spa-vue", () => {
   let Vue, props, $destroy;
 
@@ -122,9 +128,7 @@ describe("single-spa-vue", () => {
       .then(() => lifecycles.mount(props))
       .then(() => {
         expect(Vue).toHaveBeenCalled();
-        expect(Vue.mock.calls[0][0].el).toBe(
-          "#my-custom-el-2 .single-spa-container"
-        );
+        expect(Vue.mock.calls[0][0].el).toEqual(singleSpaContainerDiv);
         expect(Vue.mock.calls[0][0].data()).toEqual({
           name: "test-app",
         });
@@ -155,9 +159,7 @@ describe("single-spa-vue", () => {
       .bootstrap(props)
       .then(() => lifecycles.mount(props))
       .then(() => {
-        expect(Vue.mock.calls[0][0].el).toBe(
-          `#${htmlId} .single-spa-container`
-        );
+        expect(Vue.mock.calls[0][0].el).toEqual(singleSpaContainerDiv);
         expect(Vue.mock.calls[0][0].data()).toEqual({
           name: "test-app",
         });
@@ -182,11 +184,31 @@ describe("single-spa-vue", () => {
     }).toThrow(/must be a string CSS selector/);
   });
 
-  it(`throws an error if appOptions.el doesn't exist in the dom`, () => {
+  it(`throws an error if appOptions.el as string selector doesn't exist in the dom`, () => {
     const lifecycles = new singleSpaVue({
       Vue,
       appOptions: {
         el: "#doesnt-exist-in-dom",
+      },
+    });
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        fail("should throw validation error");
+      })
+      .catch((err) => {
+        expect(err.message).toMatch("the dom element must exist in the dom");
+      });
+  });
+
+  it(`throws an error if appOptions.el as HTMLElement doesn't exist in the dom`, () => {
+    const doesntExistInDom = document.createElement("div");
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {
+        el: doesntExistInDom,
       },
     });
 
@@ -363,9 +385,7 @@ describe("single-spa-vue", () => {
       .then(() => lifecycles.mount(props))
       .then(() => {
         expect(Vue).toHaveBeenCalled();
-        expect(Vue.mock.calls[0][0].el).toBe(
-          cssSelector + " .single-spa-container"
-        );
+        expect(Vue.mock.calls[0][0].el).toEqual(singleSpaContainerDiv);
         return lifecycles.unmount(props);
       });
   });
@@ -598,7 +618,9 @@ describe("single-spa-vue", () => {
     return lifecycles
       .bootstrap(props)
       .then(() => lifecycles.mount(props))
-      .then(() => expect(Vue.mock.calls[0][0].el).toBe(`#${htmlId}`))
+      .then(() =>
+        expect(Vue.mock.calls[0][0].el).toEqual(singleSpaApplicationDiv)
+      )
       .then(() => {
         expect(document.querySelector(`#${htmlId}`)).toBeTruthy();
         domEl.remove();
@@ -622,11 +644,43 @@ describe("single-spa-vue", () => {
       .bootstrap(props)
       .then(() => lifecycles.mount(props))
       .then(() =>
-        expect(Vue.mock.calls[0][0].el).toBe(`#${htmlId} .single-spa-container`)
+        expect(Vue.mock.calls[0][0].el).toEqual(singleSpaContainerDiv)
       )
       .then(() => {
         expect(
           document.querySelector(`#${htmlId} .single-spa-container`)
+        ).toBeTruthy();
+        domEl.remove();
+      });
+  });
+
+  it(`mounts into a shadow dom`, () => {
+    const domEl = document.createElement("div");
+    domEl.attachShadow({ mode: "open" });
+
+    const shadowMount = document.createElement("div");
+    domEl.shadowRoot.append(shadowMount);
+
+    const htmlId = CSS.escape("single-spa-application:test-app");
+
+    document.body.appendChild(domEl);
+
+    const lifecycles = new singleSpaVue({
+      Vue,
+      appOptions: {
+        el: shadowMount,
+      },
+    });
+
+    return lifecycles
+      .bootstrap(props)
+      .then(() => lifecycles.mount(props))
+      .then(() =>
+        expect(Vue.mock.calls[0][0].el).toEqual(singleSpaContainerDiv)
+      )
+      .then(() => {
+        expect(
+          domEl.shadowRoot.querySelector(`#${htmlId} .single-spa-container`)
         ).toBeTruthy();
         domEl.remove();
       });
