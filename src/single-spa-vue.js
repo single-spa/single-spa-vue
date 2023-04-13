@@ -106,15 +106,15 @@ function mount(opts, mountedInstances, props) {
 
       if (!opts.replaceMode) {
         appOptions.el = appOptions.el + " .single-spa-container";
-      }
-
-      // single-spa-vue@>=2 always REPLACES the `el` instead of appending to it.
-      // We want domEl to stick around and not be replaced. So we tell Vue to mount
-      // into a container div inside of the main domEl
-      if (!domEl.querySelector(".single-spa-container")) {
-        const singleSpaContainer = document.createElement("div");
-        singleSpaContainer.className = "single-spa-container";
-        domEl.appendChild(singleSpaContainer);
+      
+        // single-spa-vue@>=2 always REPLACES the `el` instead of appending to it.
+        // We want domEl to stick around and not be replaced. So we tell Vue to mount
+        // into a container div inside of the main domEl
+        if (!domEl.querySelector(".single-spa-container")) {
+          const singleSpaContainer = document.createElement("div");
+          singleSpaContainer.className = "single-spa-container";
+          domEl.appendChild(singleSpaContainer);
+        }
       }
 
       instance.domEl = domEl;
