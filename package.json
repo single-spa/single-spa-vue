@@ -6,6 +6,7 @@
   "module": "dist/esm/single-spa-vue.js",
   "exports": {
     ".": {
+      "types": "./types/single-spa-vue.d.ts",
       "import": "./dist/esm/single-spa-vue.js",
       "require": "./dist/umd/single-spa-vue.js"
     },
