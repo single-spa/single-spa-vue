@@ -28,9 +28,6 @@ devDependencies:
   '@vue/test-utils':
     specifier: ^1.1.1
     version: 1.1.2(vue-template-compiler@2.6.12)(vue@2.6.12)
-  babel-core:
-    specifier: 7.0.0-bridge.0
-    version: 7.0.0-bridge.0(@babel/core@7.22.5)
   babel-jest:
     specifier: ^29.5.0
     version: 29.5.0(@babel/core@7.22.5)
@@ -50,7 +47,7 @@ devDependencies:
     specifier: ^1.1.0
     version: 1.1.0
   husky:
-    specifier: ^8.0.3
+    specifier: ^8.0.0
     version: 8.0.3
   jest:
     specifier: ^29.5.0
@@ -2100,14 +2097,6 @@ packages:
 
   /asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
-    dev: true
-
-  /babel-core@7.0.0-bridge.0(@babel/core@7.22.5):
-    resolution: {integrity: sha512-poPX9mZH/5CSanm50Q+1toVci6pv5KSRv/5TWCwtzQS5XEwn40BcCrgIeMFWP9CKKIniKXNxoIOnOq4VVlGXhg==}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-    dependencies:
-      '@babel/core': 7.22.5
     dev: true
 
   /babel-jest@29.5.0(@babel/core@7.22.5):
