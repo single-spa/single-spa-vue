@@ -65,7 +65,7 @@ export default {
       });
     },
     singleSpaUnmount() {
-      if (this.parcel) {
+      if (this.parcel && this.parcel.getStatus() === "MOUNTED") {
         return this.parcel.unmount();
       }
     },
