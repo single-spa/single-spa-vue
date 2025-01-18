@@ -1,9 +1,19 @@
 import { mount } from "@vue/test-utils";
-import { mountRootParcel } from "single-spa";
+import {
+  mountRootParcel,
+  registerApplication,
+  start,
+  triggerAppChange,
+  unregisterApplication,
+} from "single-spa";
 import Parcel from "./parcel.js";
 
 describe("Parcel", () => {
   let wrapper;
+
+  beforeAll(() => {
+    start();
+  });
 
   afterEach(() => {
     if (wrapper) {
@@ -212,6 +222,47 @@ describe("Parcel", () => {
     expect(wrapper.emitted().parcelMounted).toBeTruthy();
     expect(config.mounted).toBe(true);
     expect(wrapper.find("button#parcel").exists()).toBe(true);
+  });
+
+  fit(`doesn't throw error if parent application is unmounted`, async () => {
+    let appMounted = true;
+    const config = createParcelConfig();
+
+    registerApplication({
+      name: "parent-app-unmount",
+      activeWhen() {
+        return appMounted;
+      },
+      app: {
+        async bootstrap() {},
+        async mount(props) {
+          wrapper = await mount(Parcel, {
+            propsData: {
+              config,
+              mountParcel: props.mountParcel,
+            },
+          });
+        },
+        async unmount() {},
+      },
+    });
+
+    await triggerAppChange();
+    await tick();
+
+    expect(config.mounted).toBe(true);
+
+    appMounted = false;
+
+    await triggerAppChange();
+
+    expect(config.mounted).toBe(false);
+
+    // This is what caused the error in https://github.com/single-spa/single-spa-vue/pull/95
+    // Trying to unmount the vue component after the single-spa app already unmounted the parcel
+    await wrapper.destroy();
+
+    unregisterApplication("parent-app-unmount");
   });
 });
 
