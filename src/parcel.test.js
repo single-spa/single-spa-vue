@@ -224,7 +224,7 @@ describe("Parcel", () => {
     expect(wrapper.find("button#parcel").exists()).toBe(true);
   });
 
-  fit(`doesn't throw error if parent application is unmounted`, async () => {
+  it(`doesn't throw error if parent application is unmounted`, async () => {
     let appMounted = true;
     const config = createParcelConfig();
 
