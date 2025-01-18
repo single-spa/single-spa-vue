@@ -4,6 +4,7 @@
   "description": "a single-spa plugin for vue.js applications",
   "main": "dist/umd/single-spa-vue.js",
   "module": "dist/esm/single-spa-vue.js",
+  "packageManager": "pnpm@9.15.4",
   "exports": {
     ".": {
       "types": "./types/single-spa-vue.d.ts",
