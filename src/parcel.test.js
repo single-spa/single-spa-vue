@@ -17,7 +17,7 @@ describe("Parcel", () => {
 
   afterEach(() => {
     if (wrapper) {
-      wrapper.destroy();
+      wrapper.unmount();
     }
 
     wrapper = null;
@@ -83,12 +83,12 @@ describe("Parcel", () => {
     expect(wrapper.find("span").exists()).toBe(true);
     expect(wrapper.find("span").classes()).toContain("the-class");
     expect(wrapper.find("span").attributes("style")).toEqual(
-      "background-color: red;"
+      "background-color: red;",
     );
 
     expect(wrapper.find("span").find("button#parcel").exists()).toBe(true);
     expect(wrapper.find("span").find("button#parcel").text()).toBe(
-      "The parcel button"
+      "The parcel button",
     );
   });
 
@@ -108,7 +108,7 @@ describe("Parcel", () => {
 
     expect(wrapper.find("button#parcel").exists()).toBe(true);
 
-    await wrapper.destroy();
+    await wrapper.unmount();
 
     await tick();
 
@@ -260,7 +260,7 @@ describe("Parcel", () => {
 
     // This is what caused the error in https://github.com/single-spa/single-spa-vue/pull/95
     // Trying to unmount the vue component after the single-spa app already unmounted the parcel
-    await wrapper.destroy();
+    await wrapper.unmount();
 
     unregisterApplication("parent-app-unmount");
   });

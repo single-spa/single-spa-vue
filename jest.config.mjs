@@ -4,6 +4,9 @@ const config = {
   transform: {
     "\\.[cm]?[jt]sx?$": "babel-jest",
   },
+  testEnvironmentOptions: {
+    customExportConditions: ["node", "node-addons"],
+  },
 };
 
 export default config;
