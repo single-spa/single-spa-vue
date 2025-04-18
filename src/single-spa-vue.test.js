@@ -1,4 +1,6 @@
+import { mountRootParcel } from "single-spa";
 import singleSpaVue from "./single-spa-vue";
+import { createApp, h, nextTick, ref } from "vue";
 
 const domElId = `single-spa-application:test-app`;
 const cssSelector = `#single-spa-application\\:test-app`;
@@ -73,7 +75,7 @@ describe("single-spa-vue", () => {
     document.body.appendChild(
       Object.assign(document.createElement("div"), {
         id: "my-custom-el",
-      })
+      }),
     );
 
     const lifecycles = new singleSpaVue({
@@ -84,7 +86,7 @@ describe("single-spa-vue", () => {
     });
 
     expect(document.querySelector(`#my-custom-el .single-spa-container`)).toBe(
-      null
+      null,
     );
 
     return lifecycles
@@ -92,7 +94,7 @@ describe("single-spa-vue", () => {
       .then(() => lifecycles.mount(props))
       .then(() => {
         expect(
-          document.querySelector(`#my-custom-el .single-spa-container`)
+          document.querySelector(`#my-custom-el .single-spa-container`),
         ).toBeTruthy();
 
         document.querySelector("#my-custom-el").remove();
@@ -114,7 +116,7 @@ describe("single-spa-vue", () => {
     });
 
     expect(
-      document.querySelector(`#my-custom-el-2 .single-spa-container`)
+      document.querySelector(`#my-custom-el-2 .single-spa-container`),
     ).toBe(null);
 
     return lifecycles
@@ -123,7 +125,7 @@ describe("single-spa-vue", () => {
       .then(() => {
         expect(Vue).toHaveBeenCalled();
         expect(Vue.mock.calls[0][0].el).toBe(
-          "#my-custom-el-2 .single-spa-container"
+          "#my-custom-el-2 .single-spa-container",
         );
         expect(Vue.mock.calls[0][0].data()).toEqual({
           name: "test-app",
@@ -131,7 +133,7 @@ describe("single-spa-vue", () => {
       })
       .then(() => {
         expect(
-          document.querySelector(`#my-custom-el-2 .single-spa-container`)
+          document.querySelector(`#my-custom-el-2 .single-spa-container`),
         ).toBeTruthy();
         domEl.remove();
       });
@@ -156,7 +158,7 @@ describe("single-spa-vue", () => {
       .then(() => lifecycles.mount(props))
       .then(() => {
         expect(Vue.mock.calls[0][0].el).toBe(
-          `#${htmlId} .single-spa-container`
+          `#${htmlId} .single-spa-container`,
         );
         expect(Vue.mock.calls[0][0].data()).toEqual({
           name: "test-app",
@@ -164,7 +166,7 @@ describe("single-spa-vue", () => {
       })
       .then(() => {
         expect(
-          document.querySelector(`#${htmlId} .single-spa-container`)
+          document.querySelector(`#${htmlId} .single-spa-container`),
         ).toBeTruthy();
         domEl.remove();
       });
@@ -271,11 +273,11 @@ describe("single-spa-vue", () => {
       });
   });
 
-  it(`appOptions function will recieve the props provided at mount`, () => {
+  it(`appOptions function will receive the props provided at mount`, () => {
     const appOptions = jest.fn((props) =>
       Promise.resolve({
         props,
-      })
+      }),
     );
 
     const lifecycles = new singleSpaVue({
@@ -364,7 +366,7 @@ describe("single-spa-vue", () => {
       .then(() => {
         expect(Vue).toHaveBeenCalled();
         expect(Vue.mock.calls[0][0].el).toBe(
-          cssSelector + " .single-spa-container"
+          cssSelector + " .single-spa-container",
         );
         return lifecycles.unmount(props);
       });
@@ -381,7 +383,7 @@ describe("single-spa-vue", () => {
         lifecycles.mount(props).then((instance) => {
           expect(Vue).toHaveBeenCalled();
           expect(instance instanceof Vue).toBeTruthy();
-        })
+        }),
       )
       .then(() => {
         return lifecycles.unmount(props);
@@ -622,13 +624,69 @@ describe("single-spa-vue", () => {
       .bootstrap(props)
       .then(() => lifecycles.mount(props))
       .then(() =>
-        expect(Vue.mock.calls[0][0].el).toBe(`#${htmlId} .single-spa-container`)
+        expect(Vue.mock.calls[0][0].el).toBe(
+          `#${htmlId} .single-spa-container`,
+        ),
       )
       .then(() => {
         expect(
-          document.querySelector(`#${htmlId} .single-spa-container`)
+          document.querySelector(`#${htmlId} .single-spa-container`),
         ).toBeTruthy();
         domEl.remove();
       });
+  });
+
+  it(`can handle being mounted multiple times, as a parcel`, async () => {
+    const App = {
+      setup() {
+        const count = ref(0);
+        return { count };
+      },
+      template: `
+        <button @click="count++">
+          {{ count }}
+        </button>`,
+    };
+
+    const lifecycles = new singleSpaVue({
+      createApp,
+      appOptions: {
+        render() {
+          return h(App, {
+            test: "value",
+          });
+        },
+      },
+      handleInstance(app) {},
+    });
+
+    const container1 = document.createElement("div");
+    const parcel1 = mountRootParcel(lifecycles, { domElement: container1 });
+    document.body.appendChild(container1);
+
+    const container2 = document.createElement("div");
+    const parcel2 = mountRootParcel(lifecycles, { domElement: container2 });
+    document.body.appendChild(container2);
+
+    await parcel1.mountPromise;
+    await parcel2.mountPromise;
+
+    expect(container1.querySelector("button").textContent).toEqual("0");
+    expect(container2.querySelector("button").textContent).toEqual("0");
+
+    container1.querySelector("button").click();
+
+    await nextTick();
+
+    expect(container1.querySelector("button").textContent).toEqual("1");
+    expect(container2.querySelector("button").textContent).toEqual("0");
+
+    container2.querySelector("button").click();
+    container2.querySelector("button").click();
+
+    await nextTick();
+
+    expect(container1.querySelector("button").textContent).toEqual("1");
+    expect(container2.querySelector("button").textContent).toEqual("2");
   });
 });

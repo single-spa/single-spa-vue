@@ -90,7 +90,7 @@ export default {
 
     if (!this.mountParcel) {
       throw Error(
-        `single-spa-vue: <parcel> component requires a mountParcel prop`
+        `single-spa-vue: <parcel> component requires a mountParcel prop`,
       );
     }
 

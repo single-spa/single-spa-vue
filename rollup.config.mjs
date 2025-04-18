@@ -12,7 +12,7 @@ export default [
 function createConfig(format) {
   return [
     {
-      input: "./src/single-spa-vue.js",
+      input: "./src/single-spa-vue.ts",
       output: {
         dir: `dist/${format}`,
         name: format === "umd" ? "singleSpaVue" : null,
@@ -30,7 +30,7 @@ function createConfig(format) {
       ],
     },
     {
-      input: "./src/parcel.js",
+      input: "./src/parcel.ts",
       output: {
         dir: `dist/${format}`,
         name: format === "umd" ? "singleSpaVueParcel" : null,

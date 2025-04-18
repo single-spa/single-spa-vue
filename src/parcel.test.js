@@ -1,5 +1,8 @@
 import { mount } from "@vue/test-utils";
 import {
+  addErrorHandler,
+  getAppStatus,
+  MOUNTED,
   mountRootParcel,
   registerApplication,
   start,
@@ -7,6 +10,8 @@ import {
   unregisterApplication,
 } from "single-spa";
 import Parcel from "./parcel.js";
+import singleSpaVue from "./single-spa-vue.js";
+import { createApp, h, ref, nextTick } from "vue";
 
 describe("Parcel", () => {
   let wrapper;
@@ -17,7 +22,7 @@ describe("Parcel", () => {
 
   afterEach(() => {
     if (wrapper) {
-      wrapper.destroy();
+      wrapper.unmount();
     }
 
     wrapper = null;
@@ -83,12 +88,12 @@ describe("Parcel", () => {
     expect(wrapper.find("span").exists()).toBe(true);
     expect(wrapper.find("span").classes()).toContain("the-class");
     expect(wrapper.find("span").attributes("style")).toEqual(
-      "background-color: red;"
+      "background-color: red;",
     );
 
     expect(wrapper.find("span").find("button#parcel").exists()).toBe(true);
     expect(wrapper.find("span").find("button#parcel").text()).toBe(
-      "The parcel button"
+      "The parcel button",
     );
   });
 
@@ -108,7 +113,7 @@ describe("Parcel", () => {
 
     expect(wrapper.find("button#parcel").exists()).toBe(true);
 
-    await wrapper.destroy();
+    await wrapper.unmount();
 
     await tick();
 
@@ -260,9 +265,102 @@ describe("Parcel", () => {
 
     // This is what caused the error in https://github.com/single-spa/single-spa-vue/pull/95
     // Trying to unmount the vue component after the single-spa app already unmounted the parcel
-    await wrapper.destroy();
+    await wrapper.unmount();
 
     unregisterApplication("parent-app-unmount");
+  });
+
+  it(`works with multiple instances of the same parcelConfig mounted`, async () => {
+    const App = {
+      setup() {
+        const count = ref(0);
+        return { count };
+      },
+      template: `
+        <button @click="count++">
+          {{ count }}
+        </button>`,
+    };
+
+    const parcelConfig = new singleSpaVue({
+      createApp,
+      appOptions: {
+        render() {
+          return h(App, {
+            test: "value",
+          });
+        },
+      },
+      handleInstance(app) {},
+    });
+
+    const name = "parent-mount-multiple-parcels";
+
+    addErrorHandler((err) => {
+      console.error(err);
+    });
+
+    let container, parcelContainer1, parcelContainer2;
+
+    registerApplication({
+      name,
+      activeWhen: ["/"],
+      app: {
+        async bootstrap() {},
+        async mount(props) {
+          container = document.createElement("div");
+
+          parcelContainer1 = document.createElement("div");
+          parcelContainer2 = document.createElement("div");
+
+          container.appendChild(parcelContainer1);
+          container.appendChild(parcelContainer2);
+
+          document.body.appendChild(container);
+
+          const parcel1 = props.mountParcel(parcelConfig, {
+            domElement: parcelContainer1,
+            mountParcel: props.mountParcel,
+          });
+          const parcel2 = props.mountParcel(parcelConfig, {
+            domElement: parcelContainer2,
+            mountParcel: props.mountParcel,
+          });
+
+          await parcel1.mountPromise;
+          await parcel2.mountPromise;
+        },
+        async unmount() {
+          container.remove();
+        },
+      },
+    });
+
+    await triggerAppChange();
+
+    expect(getAppStatus(name)).toBe(MOUNTED);
+
+    expect(parcelContainer1.querySelector("button").textContent).toEqual("0");
+    expect(parcelContainer2.querySelector("button").textContent).toEqual("0");
+
+    parcelContainer1.querySelector("button").click();
+
+    await nextTick();
+
+    expect(parcelContainer1.querySelector("button").textContent).toEqual("1");
+    expect(parcelContainer2.querySelector("button").textContent).toEqual("0");
+
+    parcelContainer2.querySelector("button").click();
+    parcelContainer2.querySelector("button").click();
+
+    await nextTick();
+
+    expect(parcelContainer1.querySelector("button").textContent).toEqual("1");
+    expect(parcelContainer2.querySelector("button").textContent).toEqual("2");
+
+    unregisterApplication(name);
+
+    await triggerAppChange();
   });
 });
 
