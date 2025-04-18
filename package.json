@@ -1,15 +1,17 @@
 {
   "name": "single-spa-vue",
   "version": "3.0.1",
+  "type": "module",
   "description": "a single-spa plugin for vue.js applications",
   "packageManager": "pnpm@9.15.4",
   "exports": {
     ".": {
-      "types": "./types/single-spa-vue.d.ts",
+      "types": "./dist/single-spa-vue.d.ts",
       "import": "./dist/esm/single-spa-vue.js",
       "require": "./dist/umd/single-spa-vue.js"
     },
     "./parcel": {
+      "types": "./dist/parcel.d.ts",
       "import": "./dist/esm/parcel.js",
       "require": "./dist/umd/parcel.js"
     }
@@ -64,7 +66,6 @@
     "babel-jest": "^29.7.0",
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.2",
-    "css.escape": "^1.5.1",
     "eslint": "^9.24.0",
     "eslint-config-important-stuff": "^1.1.0",
     "husky": "^9.1.7",
@@ -73,10 +74,10 @@
     "prettier": "^3.5.3",
     "pretty-quick": "^4.1.1",
     "rimraf": "^6.0.1",
-    "rollup": "^4.39.0",
-    "single-spa": "^6.0.3",
+    "rollup": "^4.40.0",
+    "single-spa": "7.0.0-beta.3",
     "tsd": "^0.32.0",
-    "vue": "^3.5.13",
+    "typescript": "^5.8.3",
     "vue-template-compiler": "^2.7.16"
   },
   "tsd": {
@@ -85,5 +86,10 @@
         "dom"
       ]
     }
+  },
+  "dependencies": {
+    "dom-element-getter-helpers": "^2.0.3",
+    "vue": "^3.5.13",
+    "vue2": "npm:vue@^2"
   }
 }
