@@ -6,16 +6,6 @@ import {
   DomElementGetterOpts,
 } from "dom-element-getter-helpers";
 
-const defaultOpts = {
-  // required opts
-  rootComponent: null,
-  appOptions: null,
-
-  // sometimes require opts
-  Vue: null,
-  handleInstance: null,
-};
-
 type SingleSpaVueOptions<ExtraProps> =
   | SingleSpaVue2Options<ExtraProps>
   | SingleSpaVue3Options<ExtraProps>;
@@ -25,36 +15,20 @@ interface SingleSpaVue3Options<ExtraProps> extends DomElementGetterOpts {
     | Component<ExtraProps>
     | ((props: AppProps & ExtraProps) => Promise<Component<ExtraProps>>);
   createApp: typeof createApp | typeof createSSRApp;
-  customizeInstance(app: App): void;
+  customizeInstance?(app: App): void;
 }
 
 interface SingleSpaVue2Options<ExtraProps> extends DomElementGetterOpts {
-  // Vue 2 not installed as a dependency
   Vue: any;
   rootComponent:
     | Vue2Component<ExtraProps>
     | ((props: AppProps & ExtraProps) => Promise<Vue2Component<ExtraProps>>);
 }
 
-export function singleSpaVue<ExtraProps>(
+export default function singleSpaVue<ExtraProps>(
   opts: SingleSpaVueOptions<ExtraProps>,
 ): LifeCycles<ExtraProps> {
   if (opts["createApp"]) {
-    let RootComponent: Vue2Component;
-
-    return {
-      async bootstrap(props) {
-        if (typeof opts.rootComponent === "function") {
-          RootComponent = await (opts.rootComponent as Function)(props);
-        } else {
-          RootComponent = opts.rootComponent as Vue2Component;
-        }
-      },
-      async mount(props) {},
-      async update(props) {},
-      async unmount(props) {},
-    };
-  } else {
     const vue3Opts = opts as SingleSpaVue3Options<ExtraProps>;
     const mountedInstances: Record<string, App> = {};
     let RootComponent: Component<AppProps & ExtraProps>;
@@ -66,6 +40,11 @@ export function singleSpaVue<ExtraProps>(
         } else {
           RootComponent = vue3Opts.rootComponent as Component;
         }
+
+        // @ts-ignore
+        // https://vuejs.org/api/options-misc.html#inheritattrs
+        // The single-spa props should not be inherited as DOM attributes
+        RootComponent.inheritAttrs = false;
       },
       async mount(props) {
         const app = createApp(RootComponent, props);
@@ -81,6 +60,21 @@ export function singleSpaVue<ExtraProps>(
         const app = mountedInstances[props.name];
         return app!.unmount();
       },
+    };
+  } else {
+    let RootComponent: Vue2Component;
+
+    return {
+      async bootstrap(props) {
+        if (typeof opts.rootComponent === "function") {
+          RootComponent = await (opts.rootComponent as Function)(props);
+        } else {
+          RootComponent = opts.rootComponent as Vue2Component;
+        }
+      },
+      async mount(props) {},
+      async update(props) {},
+      async unmount(props) {},
     };
   }
 }

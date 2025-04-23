@@ -15,7 +15,8 @@ const compat = new FlatCompat({
 
 export default defineConfig([
   {
-    extends: compat.extends("eslint-config-important-stuff"),
+    extends: compat.extends("eslint-config-ts-important-stuff"),
+    files: ["**/*.ts"],
 
     languageOptions: {
       parser: babelParser,
