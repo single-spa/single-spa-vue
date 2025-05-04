@@ -88,14 +88,17 @@ function mount(opts, mountedInstances, props) {
           }
         } else {
           domEl = appOptions.el;
+          if (!domEl.parentNode) {
+            throw Error(
+              `If appOptions.el is provided to single-spa-vue, the dom element must exist in the dom. Was provided as ${appOptions.el.outerHTML}`
+            );
+          }
           if (!domEl.id) {
             domEl.id = `single-spa-application:${props.name}`;
           }
-          appOptions.el = `#${CSS.escape(domEl.id)}`;
         }
       } else {
         const htmlId = `single-spa-application:${props.name}`;
-        appOptions.el = `#${CSS.escape(htmlId)}`;
         domEl = document.getElementById(htmlId);
         if (!domEl) {
           domEl = document.createElement("div");
@@ -105,8 +108,6 @@ function mount(opts, mountedInstances, props) {
       }
 
       if (!opts.replaceMode) {
-        appOptions.el = appOptions.el + " .single-spa-container";
-
         // single-spa-vue@>=2 always REPLACES the `el` instead of appending to it.
         // We want domEl to stick around and not be replaced. So we tell Vue to mount
         // into a container div inside of the main domEl
@@ -115,8 +116,11 @@ function mount(opts, mountedInstances, props) {
           singleSpaContainer.className = "single-spa-container";
           domEl.appendChild(singleSpaContainer);
         }
+
+        domEl = domEl.querySelector(".single-spa-container");
       }
 
+      appOptions.el = domEl;
       instance.domEl = domEl;
 
       if (!appOptions.render && !appOptions.template && opts.rootComponent) {
