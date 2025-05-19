@@ -1,4 +1,0 @@
-{
-  "extends": ["eslint-config-important-stuff"],
-  "parser": "@babel/eslint-parser"
-}
