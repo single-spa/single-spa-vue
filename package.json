@@ -2,28 +2,24 @@
   "name": "single-spa-vue",
   "version": "3.0.1",
   "type": "module",
-  "description": "a single-spa plugin for vue.js applications",
-  "packageManager": "pnpm@9.15.4",
+  "description": "a single-spa helper library for Vue applications",
+  "packageManager": "pnpm@10.11.0",
   "exports": {
     ".": {
       "types": "./dist/single-spa-vue.d.ts",
-      "import": "./dist/esm/single-spa-vue.js",
-      "require": "./dist/umd/single-spa-vue.js"
+      "default": "./dist/esm/single-spa-vue.js"
     },
     "./parcel": {
       "types": "./dist/parcel.d.ts",
-      "import": "./dist/esm/parcel.js",
-      "require": "./dist/umd/parcel.js"
+      "default": "./dist/esm/parcel.js"
     }
   },
   "scripts": {
     "prepublishOnly": "pnpm run build",
-    "build": "rimraf dist && rollup -c",
-    "build:watch": "rollup -cw",
+    "build": "vite build",
     "test": "vitest --dom",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "lint": "eslint src",
     "prepare": "husky"
   },
   "repository": {
@@ -31,53 +27,31 @@
     "url": "git+https://github.com/single-spa/single-spa-vue.git"
   },
   "files": [
-    "dist",
-    "types"
+    "dist"
   ],
-  "types": "types/single-spa-vue.d.ts",
   "keywords": [
     "single-spa",
     "vue",
     "single page application",
     "microfrontends"
   ],
-  "author": "single-spa core team",
+  "author": "Jolyn Denning",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/single-spa/single-spa-vue/issues"
   },
   "homepage": "https://github.com/single-spa/single-spa-vue#readme",
   "devDependencies": {
-    "@babel/core": "^7.26.10",
-    "@babel/eslint-parser": "^7.27.0",
-    "@babel/preset-env": "^7.26.9",
-    "@babel/preset-typescript": "^7.27.0",
-    "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.24.0",
-    "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^28.0.3",
-    "@rollup/plugin-node-resolve": "^16.0.1",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@types/jest": "^29.5.14",
-    "@vue/test-utils": "^2.4.6",
-    "concurrently": "^9.1.2",
-    "eslint": "^9.24.0",
-    "eslint-config-ts-important-stuff": "^1.1.0",
-    "happy-dom": "^17.4.4",
     "husky": "^9.1.7",
-    "jasmine-core": "^5.6.0",
     "prettier": "^3.5.3",
     "pretty-quick": "^4.1.1",
-    "rimraf": "^6.0.1",
-    "rollup": "^4.40.0",
-    "single-spa": "7.0.0-beta.5",
-    "typescript": "^5.8.3",
+    "single-spa": "7.0.0-beta.7",
+    "vite": "^6.3.5",
     "vitest": "^3.1.2",
-    "vue-template-compiler": "^2.7.16"
+    "vue-router": "^4.5.0"
   },
   "dependencies": {
     "dom-element-getter-helpers": "^2.0.3",
-    "vue": "^3.5.13",
-    "vue2": "npm:vue@^2"
+    "vue": "^3.5.13"
   }
 }
