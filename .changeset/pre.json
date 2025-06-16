@@ -1,0 +1,8 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "single-spa-vue": "3.0.1"
+  },
+  "changesets": []
+}
