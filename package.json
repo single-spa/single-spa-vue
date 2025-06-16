@@ -42,8 +42,6 @@
   },
   "homepage": "https://github.com/single-spa/single-spa-vue#readme",
   "devDependencies": {
-    "@changesets/changelog-github": "^0.5.1",
-    "@changesets/cli": "^2.29.4",
     "@vue/test-utils": "^2.4.6",
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
