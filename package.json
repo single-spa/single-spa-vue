@@ -27,7 +27,7 @@
     "url": "git+https://github.com/single-spa/single-spa-vue.git"
   },
   "files": [
-    "dist"
+    "lib"
   ],
   "keywords": [
     "single-spa",
