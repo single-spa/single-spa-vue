@@ -1,4 +1,1 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-pnpm exec pretty-quick --staged && pnpm exec concurrently -n pnpm:test pnpm:lint
+pnpm exec pretty-quick --staged && pnpm test

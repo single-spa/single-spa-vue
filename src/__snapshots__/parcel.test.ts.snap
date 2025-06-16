@@ -1,0 +1,48 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`can mount and unmount a single-spa parcel 1`] = `
+{
+  "domElement": <div />,
+  "mountParcel": [Function],
+  "name": "parcel-0",
+  "singleSpa": {
+    "AppOrParcelStatus": {
+      "INITIALIZING": "INITIALIZING",
+      "LOADING_SOURCE_CODE": "LOADING_SOURCE_CODE",
+      "LOAD_ERROR": "LOAD_ERROR",
+      "MOUNTED": "MOUNTED",
+      "MOUNTING": "MOUNTING",
+      "NOT_INITIALIZED": "NOT_INITIALIZED",
+      "NOT_LOADED": "NOT_LOADED",
+      "NOT_MOUNTED": "NOT_MOUNTED",
+      "SKIP_BECAUSE_BROKEN": "SKIP_BECAUSE_BROKEN",
+      "UNLOADING": "UNLOADING",
+      "UNMOUNTING": "UNMOUNTING",
+      "UPDATING": "UPDATING",
+    },
+    "addErrorHandler": [Function],
+    "checkActivityFunctions": [Function],
+    "ensureJQuerySupport": [Function],
+    "getAppNames": [Function],
+    "getAppStatus": [Function],
+    "getMountedApps": [Function],
+    "mountRootParcel": [Function],
+    "navigateToUrl": [Function],
+    "patchHistoryApi": [Function],
+    "pathToActiveWhen": [Function],
+    "registerApplication": [Function],
+    "removeErrorHandler": [Function],
+    "setInitMaxTime": [Function],
+    "setMountMaxTime": [Function],
+    "setUnloadMaxTime": [Function],
+    "setUnmountMaxTime": [Function],
+    "start": [Function],
+    "triggerAppChange": [Function],
+    "unloadApplication": [Function],
+    "unregisterApplication": [Function],
+  },
+  "unmountSelf": [Function],
+}
+`;
+
+exports[`it can update parcel to new props 1`] = `undefined`;

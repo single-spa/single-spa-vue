@@ -1,0 +1,11 @@
+{
+  "files": ["./src/single-spa-vue.ts", "./src/parcel.ts"],
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "declarationDir": "lib",
+    "emitDeclarationOnly": true
+  }
+}
