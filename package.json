@@ -1,6 +1,6 @@
 {
   "name": "single-spa-vue",
-  "version": "3.0.1",
+  "version": "4.0.0-beta.0",
   "type": "module",
   "description": "a single-spa helper library for Vue applications",
   "packageManager": "pnpm@10.12.1",
