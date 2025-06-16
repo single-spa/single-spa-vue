@@ -46,9 +46,3 @@ exports[`can mount and unmount a single-spa parcel 1`] = `
 `;
 
 exports[`it can update parcel to new props 1`] = `undefined`;
-
-exports[`it emits an error when parcel lifecycles fail 1`] = `
-[
-  [Error: parcel 'parcel-2' died in status NOT_MOUNTED: err],
-]
-`;
