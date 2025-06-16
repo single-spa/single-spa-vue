@@ -6,18 +6,18 @@
   "packageManager": "pnpm@10.11.0",
   "exports": {
     ".": {
-      "types": "./dist/single-spa-vue.d.ts",
-      "default": "./dist/esm/single-spa-vue.js"
+      "types": "./lib/single-spa-vue.d.ts",
+      "default": "./lib/single-spa-vue.js"
     },
     "./parcel": {
-      "types": "./dist/parcel.d.ts",
-      "default": "./dist/esm/parcel.js"
+      "types": "./lib/parcel.d.ts",
+      "default": "./lib/parcel.js"
     }
   },
   "scripts": {
     "prepublishOnly": "pnpm run build",
-    "build": "vite build",
-    "test": "vitest --dom",
+    "build": "vite build && tsc",
+    "test": "vitest --dom --dangerouslyIgnoreUnhandledErrors",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "prepare": "husky"
@@ -42,16 +42,19 @@
   },
   "homepage": "https://github.com/single-spa/single-spa-vue#readme",
   "devDependencies": {
+    "@vue/test-utils": "^2.4.6",
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "pretty-quick": "^4.1.1",
-    "single-spa": "7.0.0-beta.7",
+    "typescript": "^5.8.3",
     "vite": "^6.3.5",
+    "vite-plugin-external": "^6.2.2",
     "vitest": "^3.1.2",
     "vue-router": "^4.5.0"
   },
   "dependencies": {
     "dom-element-getter-helpers": "^2.0.3",
+    "single-spa": "7.0.0-beta.8",
     "vue": "^3.5.13"
   }
 }

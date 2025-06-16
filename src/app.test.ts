@@ -1,6 +1,13 @@
 import { test, expect, beforeAll, afterEach } from "vitest";
 import singleSpaVue from "./single-spa-vue";
-import { createApp, nextTick, ref } from "vue";
+import {
+  createApp,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
+  useTemplateRef,
+} from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import {
   navigateToUrl,
@@ -32,6 +39,10 @@ test("can mount and unmount a vue component as a single-spa-application", async 
   const Root = {
     props: ["mountParcel"],
     setup(props) {
+      buttonRef = useTemplateRef("button");
+      onUnmounted(() => {
+        unmounted = true;
+      });
       const count = ref(0);
       return { count };
     },
@@ -40,9 +51,7 @@ test("can mount and unmount a vue component as a single-spa-application", async 
         {{ count }} clicks
       </button>
     `,
-    mounted() {
-      buttonRef = this.$refs.button;
-    },
+    mounted() {},
     unmounted() {
       unmounted = true;
     },
@@ -69,7 +78,7 @@ test("can mount and unmount a vue component as a single-spa-application", async 
   expect(button!.isConnected).toBeTruthy();
   expect(unmounted).toBe(false);
   expect(button!.textContent!.trim()).toEqual("0 clicks");
-  buttonRef.click();
+  buttonRef.value.click();
   await nextTick();
   expect(button!.textContent!.trim()).toEqual("1 clicks");
 
@@ -241,4 +250,19 @@ test(`Can route`, async () => {
 
   expect(document.querySelector("h1")?.textContent).toEqual("Routes");
   expect(document.querySelector("main")?.textContent).toEqual("Home");
+});
+
+test(`validation errors`, () => {
+  // @ts-expect-error
+  expect(() => singleSpaVue()).toThrowError(`single-spa-vue: opts required`);
+
+  // @ts-expect-error
+  expect(() => singleSpaVue({})).toThrowError(
+    `single-spa-vue: opts.rootComponent required`,
+  );
+
+  // @ts-expect-error
+  expect(() => singleSpaVue({ rootComponent() {} })).toThrowError(
+    `single-spa-vue: opts.createApp must be a function`,
+  );
 });

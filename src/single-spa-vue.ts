@@ -16,6 +16,18 @@ interface SingleSpaVueOptions<ExtraProps> extends DomElementGetterOpts {
 export default function singleSpaVue<ExtraProps>(
   opts: SingleSpaVueOptions<ExtraProps>,
 ): LifeCycles<ExtraProps> {
+  if (!opts) {
+    err(`opts required`);
+  }
+
+  if (!opts.rootComponent) {
+    err(`opts.rootComponent required`);
+  }
+
+  if (typeof opts.createApp !== "function") {
+    err(`opts.createApp must be a function`);
+  }
+
   const mountedInstances: Record<string, App> = {};
   let RootComponent: Component<AppProps & ExtraProps>;
 
@@ -50,4 +62,8 @@ export default function singleSpaVue<ExtraProps>(
       delete mountedInstances[props.name];
     },
   };
+}
+
+function err(msg) {
+  throw Error(`single-spa-vue: ${msg}`);
 }
