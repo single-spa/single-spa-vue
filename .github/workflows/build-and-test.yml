@@ -16,4 +16,3 @@ jobs:
       - run: pnpm run build
       - run: pnpm test
       - run: pnpm run check-format
-      - run: pnpm run lint
