@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  single-spa: link:../single-spa
-
 importers:
 
   .:
@@ -2478,7 +2475,7 @@ snapshots:
 
   dom-element-getter-helpers@2.0.3:
     dependencies:
-      single-spa: link:../single-spa
+      single-spa: 7.0.0-beta.8
 
   dom-serializer@2.0.0:
     dependencies:
