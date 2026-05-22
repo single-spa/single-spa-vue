@@ -1,13 +1,6 @@
 import { test, expect, beforeAll, afterEach } from "vitest";
 import singleSpaVue from "./single-spa-vue";
-import {
-  createApp,
-  nextTick,
-  onMounted,
-  onUnmounted,
-  ref,
-  useTemplateRef,
-} from "vue";
+import { createApp, nextTick, onUnmounted, ref, useTemplateRef } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import {
   navigateToUrl,
@@ -18,6 +11,7 @@ import {
   start,
   registerApplication,
   unregisterApplication,
+  LifeCycleFn,
 } from "single-spa";
 
 beforeAll(() => {
@@ -250,6 +244,64 @@ test(`Can route`, async () => {
 
   expect(document.querySelector("h1")?.textContent).toEqual("Routes");
   expect(document.querySelector("main")?.textContent).toEqual("Home");
+});
+
+test(`propagates state updates to the component`, async () => {
+  const Root = {
+    props: ["message", "counter"],
+    setup() {},
+    template: `
+      <div>
+        <p class="message">{{ message }}</p>
+        <p class="counter">{{ counter }}</p>
+      </div>
+    `,
+  };
+
+  const lifecycles = singleSpaVue({
+    createApp,
+    rootComponent: Root,
+  });
+
+  registerApplication({
+    name: "updateTest",
+    app: lifecycles,
+    activeWhen: ["/updateTest"],
+    customProps: {
+      message: "Initial",
+      counter: 0,
+    },
+  });
+
+  navigateToUrl("/updateTest");
+  await triggerAppChange();
+
+  expect(getAppStatus("updateTest")).toBe(AppOrParcelStatus.MOUNTED);
+
+  let messageElement = document.querySelector<HTMLParagraphElement>(".message");
+  let counterElement = document.querySelector<HTMLParagraphElement>(".counter");
+
+  expect(messageElement?.textContent).toEqual("Initial");
+  expect(counterElement?.textContent).toEqual("0");
+
+  // Simulate an update to the props
+  await (lifecycles.update as LifeCycleFn<any>)?.({
+    name: "updateTest",
+    message: "Updated",
+    counter: 42,
+  });
+
+  await nextTick();
+
+  messageElement = document.querySelector<HTMLParagraphElement>(".message");
+  counterElement = document.querySelector<HTMLParagraphElement>(".counter");
+
+  expect(messageElement?.textContent).toEqual("Updated");
+  expect(counterElement?.textContent).toEqual("42");
+
+  navigateToUrl("/");
+  await triggerAppChange();
+  unregisterApplication("updateTest");
 });
 
 test(`validation errors`, () => {
