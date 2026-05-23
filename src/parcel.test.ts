@@ -124,10 +124,6 @@ test("it emits an error when parcel lifecycles fail", async () => {
   expect(wrapper.emitted().parcelError[0][0].message).toMatch(
     /died in status NOT_MOUNTED/,
   );
-
-  wrapper.unmount();
-
-  await tick();
 });
 
 function tick() {
