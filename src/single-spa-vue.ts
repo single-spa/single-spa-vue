@@ -1,9 +1,7 @@
 import type { AppProps, LifeCycles } from "single-spa";
 import type { App, Component, createApp, createSSRApp } from "vue";
-import {
-  chooseDomElementGetter,
-  DomElementGetterOpts,
-} from "dom-element-getter-helpers";
+import { chooseDomElementGetter } from "dom-element-getter-helpers";
+import type { DomElementGetterOpts } from "dom-element-getter-helpers";
 
 interface SingleSpaVueOptions<ExtraProps> extends DomElementGetterOpts {
   rootComponent:
@@ -15,7 +13,9 @@ interface SingleSpaVueOptions<ExtraProps> extends DomElementGetterOpts {
 
 export default function singleSpaVue<ExtraProps>(
   opts: SingleSpaVueOptions<ExtraProps>,
-): LifeCycles<ExtraProps> {
+): LifeCycles<ExtraProps> & {
+  bootstrap: (props: AppProps & ExtraProps) => Promise<void>;
+} {
   if (!opts) {
     err(`opts required`);
   }
@@ -31,18 +31,25 @@ export default function singleSpaVue<ExtraProps>(
   const mountedInstances: Record<string, App> = {};
   let RootComponent: Component<AppProps & ExtraProps>;
 
+  const initRootComponent = async (props: AppProps & ExtraProps) => {
+    if (typeof opts.rootComponent === "function") {
+      RootComponent = await (opts.rootComponent as Function)(props);
+    } else {
+      RootComponent = opts.rootComponent as Component<AppProps & ExtraProps>;
+    }
+
+    // https://vuejs.org/api/options-misc.html#inheritattrs
+    // The single-spa props should not be inherited as DOM attributes
+    // @ts-ignore
+    RootComponent.inheritAttrs = false;
+  };
+
   return {
     async init(props) {
-      if (typeof opts.rootComponent === "function") {
-        RootComponent = await (opts.rootComponent as Function)(props);
-      } else {
-        RootComponent = opts.rootComponent as Component;
-      }
-
-      // https://vuejs.org/api/options-misc.html#inheritattrs
-      // The single-spa props should not be inherited as DOM attributes
-      // @ts-ignore
-      RootComponent.inheritAttrs = false;
+      await initRootComponent(props);
+    },
+    async bootstrap(props) {
+      await initRootComponent(props);
     },
     async mount(props) {
       const app = opts.createApp(RootComponent, props);
@@ -53,7 +60,12 @@ export default function singleSpaVue<ExtraProps>(
       app.mount(domElement);
       mountedInstances[props.name] = app;
     },
-    async update(props) {},
+    async update(props) {
+      const app = mountedInstances[props.name];
+      if (app && app._instance?.props) {
+        Object.assign(app._instance.props, props);
+      }
+    },
     async unmount(props) {
       const app = mountedInstances[props.name];
       app!.unmount();
@@ -64,6 +76,6 @@ export default function singleSpaVue<ExtraProps>(
   };
 }
 
-function err(msg) {
+function err(msg: string) {
   throw Error(`single-spa-vue: ${msg}`);
 }
